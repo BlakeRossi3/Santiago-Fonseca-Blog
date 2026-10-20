@@ -1,0 +1,79 @@
+{
+  "site": {
+    "name": "Your Name",
+    "tagline": "Notes on films, short fiction, and *other things I make*.",
+    "intro": "A running record of what I'm watching, writing and building. Start anywhere.",
+    "about": "This is the about page. Say who you are, what you make, and what you're working on next.\n\nYou can change all of this, and everything else on the site, from edit mode: click **Edit** at the bottom of any page and enter your code.",
+    "photo": "",
+    "email": "",
+    "links": [],
+    "sections": {
+      "review": { "title": "", "intro": "" },
+      "story": { "title": "", "intro": "" },
+      "project": { "title": "", "intro": "" }
+    }
+  },
+  "entries": [
+    {
+      "id": "sample-story",
+      "type": "story",
+      "title": "The Projectionist",
+      "slug": "the-projectionist",
+      "date": "2026-10-02",
+      "published": true,
+      "featured": true,
+      "cover": "",
+      "summary": "Every night for thirty years, Mara ran the last reel for an empty room. Tonight, someone stayed.",
+      "body": "Every night for thirty years, Mara ran the last reel for an empty room.\nThe late show at the Orpheum had never been popular. By the time the credits rolled the ushers were gone, the popcorn machine had gone quiet, and the only sound in the building was the projector ticking behind her like a second heart.\nShe didn't mind. She liked the films better when no one was watching them. They seemed to relax.\n* * *\nThe man in row F arrived halfway through. She saw him through the little square window: a dark shape against the silver light, hat still on, not moving.\nWhen the reel ended she waited for him to leave. He didn't.\n\"We're closed,\" she said from the aisle.\n\"I know,\" he said. \"I was waiting for the part they cut.\"\nMara looked at him for a long moment. Then she went back up the stairs, opened the cabinet she hadn't opened since 1994, and threaded the last reel by hand.\n(This is a sample story. Replace it with your own from edit mode.)",
+      "tags": ["Flash fiction"]
+    },
+    {
+      "id": "sample-review-1",
+      "type": "review",
+      "title": "Paris, Texas",
+      "slug": "paris-texas",
+      "date": "2026-09-21",
+      "published": true,
+      "featured": false,
+      "cover": "",
+      "summary": "A film about the distance between people, measured in miles and then in feet and then in nothing at all.",
+      "body": "Wenders shoots the American Southwest like it's the surface of a planet nobody has bothered to name. Travis walks out of it at the start and spends the rest of the film trying to walk back into his own life.\nThe peep-show scene is the whole movie in miniature: two people who can't look at each other, talking through glass, finally saying the true thing because they can't see the other person's face.\nRy Cooder's slide guitar does half the acting. Harry Dean Stanton does the other half without seeming to try.\n(Sample review — swap it for your own.)",
+      "tags": ["Drama", "Road movie"],
+      "year": "1984",
+      "director": "Wim Wenders",
+      "rating": 4.5
+    },
+    {
+      "id": "sample-review-2",
+      "type": "review",
+      "title": "Past Lives",
+      "slug": "past-lives",
+      "date": "2026-09-08",
+      "published": true,
+      "featured": false,
+      "cover": "",
+      "summary": "Quiet, precise, and devastating in the way only restraint can be.",
+      "body": "Nothing much happens and everything does. Celine Song trusts silence more than most first-time directors would dare, and it pays off in a final walk to a taxi that lasts about a minute and feels like twenty-four years.\n(Sample review — swap it for your own.)",
+      "tags": ["Drama", "Romance"],
+      "year": "2023",
+      "director": "Celine Song",
+      "rating": 4
+    },
+    {
+      "id": "sample-project",
+      "type": "project",
+      "title": "This portfolio",
+      "slug": "this-portfolio",
+      "date": "2026-10-20",
+      "published": true,
+      "featured": false,
+      "cover": "",
+      "summary": "A home for my reviews, stories and works in progress.",
+      "body": "Built to be simple to keep up: write in edit mode, hit save, done.\n## What's next\n- Fill it with real work\n- Add a photo on the About page\n- Delete these samples",
+      "tags": ["Web"],
+      "status": "In progress",
+      "role": "Writer & editor",
+      "link": ""
+    }
+  ]
+}

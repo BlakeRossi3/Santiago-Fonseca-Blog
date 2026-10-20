@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio</title>
+  <meta name="description" content="Film reviews, short stories and projects.">
+  <meta name="theme-color" content="#0d0c0f">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" data-brand></a>
+      <nav class="nav" aria-label="Main" data-nav></nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap" tabindex="-1">
+    <p class="loading">Loading…</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span data-copy></span>
+      <span class="footer-links" data-footer-links></span>
+      <button class="edit-link" type="button" data-unlock>Edit</button>
+    </div>
+  </footer>
+
+  <div class="editbar" data-editbar hidden>
+    <span class="editbar-label"><span>Editing</span></span>
+    <details class="newmenu">
+      <summary class="btn btn-sm btn-primary">New</summary>
+      <div class="newmenu-list">
+        <a href="/edit/new/review">Film review</a>
+        <a href="/edit/new/story">Short story</a>
+        <a href="/edit/new/project">Project</a>
+      </div>
+    </details>
+    <a class="btn btn-sm" href="/settings">Site settings</a>
+    <button class="btn btn-sm btn-ghost" type="button" data-lock>Lock</button>
+  </div>
+
+  <dialog class="modal" id="unlock">
+    <form method="dialog" class="unlock-form">
+      <h2>Edit mode</h2>
+      <p>Enter the edit code to make changes.</p>
+      <label class="field">
+        <span class="label">Edit code</span>
+        <input class="input" type="password" name="code" autocomplete="current-password" required>
+      </label>
+      <p class="form-error" data-error role="alert"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" type="button" value="cancel" data-cancel>Cancel</button>
+        <button class="btn btn-primary" type="submit">Unlock</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
