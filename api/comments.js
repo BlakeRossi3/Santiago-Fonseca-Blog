@@ -37,6 +37,21 @@ function rateLimited(ip) {
   return false;
 }
 
+const MESSAGES = {
+  en: {
+    unknown: 'Unknown post.', unavailable: 'Comments are not available right now.',
+    fast: 'That was quick! Wait a moment and try again.', stale: 'This page has been open a while. Refresh and try again.',
+    flood: "You're commenting a lot. Try again in a few minutes.", closed: 'Comments are turned off.',
+    empty: 'Add your name and a comment.', busy: 'Busy right now. Try again.', failed: 'Something went wrong. Try again.',
+  },
+  es: {
+    unknown: 'Publicación desconocida.', unavailable: 'Los comentarios no están disponibles ahora mismo.',
+    fast: '¡Qué rápido! Espera un momento e inténtalo de nuevo.', stale: 'Esta página lleva tiempo abierta. Recarga e inténtalo de nuevo.',
+    flood: 'Estás comentando mucho. Inténtalo de nuevo en unos minutos.', closed: 'Los comentarios están desactivados.',
+    empty: 'Escribe tu nombre y un comentario.', busy: 'Hay mucho movimiento ahora. Inténtalo de nuevo.', failed: 'Algo salió mal. Inténtalo de nuevo.',
+  },
+};
+
 const clean = (v, max) => String(v ?? '')
   .replace(/\r\n?/g, '\n')
   .replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '')
@@ -47,6 +62,7 @@ const publicComment = c => ({ id: c.id, name: c.name, text: c.text, date: c.date
 
 export default async function handler(req, res) {
   const q = query(req);
+  let m = MESSAGES.en;
   try {
     if (req.method === 'GET') {
       const entry = q.get('entry') || '';
@@ -56,28 +72,29 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      if (storageProblem()) return send(res, 503, { error: 'Comments are not available right now.' });
       const body = (await readJson(req, 20_000)) || {};
+      m = MESSAGES[body.lang] || MESSAGES.en;
+      if (storageProblem()) return send(res, 503, { error: m.unavailable });
       const owner = codeOk(requestCode(req));
       if (!owner) {
         if (body.website) return send(res, 200, { ok: true }); // honeypot: let the bot think it worked
         const tk = tokenOk(body.token);
-        if (tk === 'fast') return send(res, 400, { error: 'That was quick! Wait a moment and try again.' });
-        if (tk !== 'ok') return send(res, 400, { error: 'This page has been open a while. Refresh and try again.' });
+        if (tk === 'fast') return send(res, 400, { error: m.fast });
+        if (tk !== 'ok') return send(res, 400, { error: m.stale });
         const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0].trim();
-        if (rateLimited(ip)) return send(res, 429, { error: "You're commenting a lot. Try again in a few minutes." });
+        if (rateLimited(ip)) return send(res, 429, { error: m.flood });
       }
 
       const entryId = String(body.entry || '');
-      if (!ID.test(entryId)) return send(res, 400, { error: 'Unknown post.' });
+      if (!ID.test(entryId)) return send(res, 400, { error: m.unknown });
       const content = cleanContent(await readContent());
-      if (!content.site.comments && !owner) return send(res, 403, { error: 'Comments are turned off.' });
+      if (!content.site.comments && !owner) return send(res, 403, { error: m.closed });
       const entry = content.entries.find(e => e.id === entryId && (e.published || owner));
-      if (!entry) return send(res, 404, { error: 'Unknown post.' });
+      if (!entry) return send(res, 404, { error: m.unknown });
 
       const name = owner ? content.site.name : clean(body.name, 60);
       const text = clean(body.text, 2000);
-      if (!name || !text) return send(res, 400, { error: 'Add your name and a comment.' });
+      if (!name || !text) return send(res, 400, { error: m.empty });
 
       const comment = {
         id: crypto.randomBytes(6).toString('hex'),
@@ -104,6 +121,6 @@ export default async function handler(req, res) {
     return methodNotAllowed(res, 'GET, POST, DELETE');
   } catch (err) {
     console.error(err);
-    return send(res, err.status || 500, { error: err.status === 503 ? 'Busy right now. Try again.' : 'Something went wrong. Try again.' });
+    return send(res, err.status || 500, { error: err.status === 503 ? m.busy : m.failed });
   }
 }

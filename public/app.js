@@ -17,8 +17,80 @@ const LABELS = {
 };
 const DEFAULT_SITE = { name: 'Santiago Fonseca', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
 const CODE_KEY = 'portfolio-edit-code';
+const LANG_KEY = 'portfolio-lang';
 
-const state = { content: null, code: readCode(), editing: false, dirty: false, here: '' };
+// Words visitors see, in both languages. Santiago's own writing has optional Spanish versions
+// (entry.es, site.es); anything without one falls back to English.
+const STR = {
+  en: {
+    'type.review': 'Film review', 'type.story': 'Short story', 'type.project': 'Project',
+    'nav.review': 'Films', 'nav.story': 'Stories', 'nav.project': 'Projects', 'nav.about': 'About',
+    'sec.review': 'Films', 'sec.story': 'Short stories', 'sec.project': 'Projects',
+    'intro.review': "Reviews and notes on what I've been watching.",
+    'intro.story': 'Fiction, mostly short, occasionally strange.',
+    'intro.project': "Things I'm making, have made, or keep meaning to finish.",
+    'count.review': ['review', 'reviews'], 'count.story': ['story', 'stories'], 'count.project': ['project', 'projects'],
+    'cta.review': 'Read the review', 'cta.story': 'Read the story', 'cta.project': 'See the project',
+    'status.Idea': 'Idea', 'status.In progress': 'In progress', 'status.Finished': 'Finished', 'status.On hold': 'On hold',
+    seeAll: 'See all →', featured: 'Featured', nothingYet: 'Nothing here yet.', addFirst: 'Add the first one',
+    nothingPublished: 'Nothing published yet. Check back soon.', all: 'All', newest: 'Newest', topRated: 'Top rated',
+    previous: '← Previous', next: 'Next →', more: 'More', directedBy: 'Directed by {x}', watched: 'Watched {x}',
+    minRead: '{n} min read', visitProject: 'Visit project ↗', email: 'Email', draft: 'Draft', starsLabel: '{r} out of 5 stars',
+    notFound: 'Not found', notFoundTitle: 'Lost the plot.', notFoundText: "That page doesn't exist (or has moved).", goHome: 'Go home',
+    editMode: 'Edit mode', unlockPrompt: 'Unlock with the edit code to continue.', unlock: 'Unlock',
+    comments: 'Comments', name: 'Name', comment: 'Comment', beKind: 'Be kind. Comments show up right away.',
+    post: 'Post comment', postingAs: 'Posting as <b>{x}</b> (author).', author: 'Author',
+    noComments: 'No comments yet. Start the conversation.', loadingComments: 'Loading comments…',
+    commentsClosed: 'Comments are closed.', commentsFailed: "Comments couldn't load.", commentPosted: 'Comment posted',
+    commentNeedText: 'Add your name and a comment.', delete: 'Delete', deleteCommentQ: 'Delete this comment?', commentDeleted: 'Comment deleted',
+    edit: 'Edit', editing: 'Editing', new: 'New', siteSettings: 'Site settings', lock: 'Lock', cancel: 'Cancel',
+    enterCode: 'Enter the edit code to make changes.', editCode: 'Edit code', badCode: "That code didn't work.",
+    skip: 'Skip to content', loading: 'Loading…', locked: 'Locked', editOn: 'Edit mode on',
+    loadFailTitle: 'Hmm.', loadFailText: "The site couldn't load. Try refreshing.", language: 'Language',
+  },
+  es: {
+    'type.review': 'Reseña de cine', 'type.story': 'Cuento', 'type.project': 'Proyecto',
+    'nav.review': 'Cine', 'nav.story': 'Cuentos', 'nav.project': 'Proyectos', 'nav.about': 'Sobre mí',
+    'sec.review': 'Cine', 'sec.story': 'Cuentos', 'sec.project': 'Proyectos',
+    'intro.review': 'Reseñas y apuntes sobre lo que he estado viendo.',
+    'intro.story': 'Ficción, casi siempre breve, a veces extraña.',
+    'intro.project': 'Cosas que estoy haciendo, que ya hice o que sigo queriendo terminar.',
+    'count.review': ['reseña', 'reseñas'], 'count.story': ['cuento', 'cuentos'], 'count.project': ['proyecto', 'proyectos'],
+    'cta.review': 'Leer la reseña', 'cta.story': 'Leer el cuento', 'cta.project': 'Ver el proyecto',
+    'status.Idea': 'Idea', 'status.In progress': 'En curso', 'status.Finished': 'Terminado', 'status.On hold': 'En pausa',
+    seeAll: 'Ver todo →', featured: 'Destacado', nothingYet: 'Todavía no hay nada aquí.', addFirst: 'Añadir el primero',
+    nothingPublished: 'Aún no hay nada publicado. Vuelve pronto.', all: 'Todo', newest: 'Más recientes', topRated: 'Mejor valoradas',
+    previous: '← Anterior', next: 'Siguiente →', more: 'Más', directedBy: 'Dirigida por {x}', watched: 'Vista el {x}',
+    minRead: '{n} min de lectura', visitProject: 'Ver proyecto ↗', email: 'Correo', draft: 'Borrador', starsLabel: '{r} de 5 estrellas',
+    notFound: 'No encontrado', notFoundTitle: 'Se perdió la trama.', notFoundText: 'Esa página no existe (o se ha movido).', goHome: 'Volver al inicio',
+    editMode: 'Modo edición', unlockPrompt: 'Desbloquea con el código de edición para continuar.', unlock: 'Desbloquear',
+    comments: 'Comentarios', name: 'Nombre', comment: 'Comentario', beKind: 'Sé amable. Los comentarios aparecen al instante.',
+    post: 'Publicar comentario', postingAs: 'Publicando como <b>{x}</b> (autor).', author: 'Autor',
+    noComments: 'Aún no hay comentarios. Empieza la conversación.', loadingComments: 'Cargando comentarios…',
+    commentsClosed: 'Los comentarios están cerrados.', commentsFailed: 'No se pudieron cargar los comentarios.', commentPosted: 'Comentario publicado',
+    commentNeedText: 'Escribe tu nombre y un comentario.', delete: 'Eliminar', deleteCommentQ: '¿Eliminar este comentario?', commentDeleted: 'Comentario eliminado',
+    edit: 'Editar', editing: 'Editando', new: 'Nuevo', siteSettings: 'Ajustes del sitio', lock: 'Bloquear', cancel: 'Cancelar',
+    enterCode: 'Introduce el código de edición para hacer cambios.', editCode: 'Código de edición', badCode: 'Ese código no funcionó.',
+    skip: 'Saltar al contenido', loading: 'Cargando…', locked: 'Bloqueado', editOn: 'Modo edición activado',
+    loadFailTitle: 'Vaya.', loadFailText: 'No se pudo cargar el sitio. Prueba a recargar.', language: 'Idioma',
+  },
+};
+
+function initialLang() {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'en' || saved === 'es') return saved;
+  } catch {}
+  return /^es\b/i.test(navigator.language || '') ? 'es' : 'en';
+}
+
+const state = { content: null, code: readCode(), editing: false, dirty: false, here: '', lang: initialLang() };
+
+function tr(key, vars = {}) {
+  const v = STR[state.lang][key] ?? STR.en[key] ?? key;
+  return typeof v === 'string' ? v.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : v;
+}
+const locale = () => (state.lang === 'es' ? 'es-ES' : 'en-US');
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
@@ -56,6 +128,16 @@ function normalize(c) {
   }
   s.sections = sections;
   s.comments = s.comments !== false;
+  const es = (c.site && c.site.es) || {};
+  s.es = {
+    tagline: es.tagline || '',
+    intro: es.intro || '',
+    about: es.about || '',
+    sections: Object.fromEntries(ORDER.map(t => {
+      const x = (es.sections && es.sections[t]) || {};
+      return [t, { title: x.title || '', intro: x.intro || '' }];
+    })),
+  };
   const entries = (Array.isArray(c.entries) ? c.entries : [])
     .filter(e => e && TYPES[e.type])
     .map(e => ({ tags: [], published: true, featured: false, summary: '', body: '', cover: '', date: '', ...e }));
@@ -85,28 +167,35 @@ async function commit(mutate, okMessage) {
 }
 
 // ---------- Helpers ----------
-const sectionTitle = t => state.content.site.sections[t].title || TYPES[t].title;
-const sectionIntro = t => state.content.site.sections[t].intro || TYPES[t].intro;
+const siteSections = () => (state.lang === 'es' ? state.content.site.es.sections : state.content.site.sections);
+const sectionTitle = t => siteSections()[t].title || tr(`sec.${t}`);
+const sectionIntro = t => siteSections()[t].intro || tr(`intro.${t}`);
+const siteText = k => (state.lang === 'es' && state.content.site.es[k]) || state.content.site[k];
+const typeLabel = t => tr(`type.${t}`);
+const statusLabel = s => tr(`status.${s}`);
 const byDate = (a, b) => (b.date || '').localeCompare(a.date || '');
-const visible = () => state.content.entries.filter(e => state.editing || e.published !== false).sort(byDate);
+// The Spanish version of an entry, field by field, falling back to English.
+const localize = e => (state.lang === 'es' && e.es
+  ? { ...e, title: e.es.title || e.title, summary: e.es.summary || e.summary, body: e.es.body || e.body }
+  : e);
+const visible = () => state.content.entries.filter(e => state.editing || e.published !== false).sort(byDate).map(localize);
 const ofType = t => visible().filter(e => e.type === t);
 const urlOf = e => `/${TYPES[e.type].path}/${encodeURIComponent(e.slug)}`;
-const plural = (n, [one, many]) => `${n} ${n === 1 ? one : many}`;
 const today = () => new Date().toISOString().slice(0, 10);
 
 function fmtDate(d, opts = { month: 'short', day: 'numeric', year: 'numeric' }) {
   if (!d) return '';
   const t = new Date(d + 'T00:00:00');
-  return isNaN(t) ? '' : t.toLocaleDateString('en-US', opts);
+  return isNaN(t) ? '' : t.toLocaleDateString(locale(), opts);
 }
 const wordCount = s => (String(s || '').match(/[\p{L}\p{N}'’-]+/gu) || []).length;
-const readTime = s => `${Math.max(1, Math.round(wordCount(s) / 230))} min read`;
+const readTime = s => tr('minRead', { n: Math.max(1, Math.round(wordCount(s) / 230)) });
 
 function stars(r) {
   r = Number(r) || 0;
-  return r > 0 ? `<span class="stars" style="--r:${r}" role="img" aria-label="${r} out of 5 stars"></span>` : '';
+  return r > 0 ? `<span class="stars" style="--r:${r}" role="img" aria-label="${tr('starsLabel', { r })}"></span>` : '';
 }
-const draftBadge = e => (e.published === false ? '<span class="badge">Draft</span>' : '');
+const draftBadge = e => (e.published === false ? `<span class="badge">${tr('draft')}</span>` : '');
 
 function slugify(s) {
   return String(s).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
@@ -172,7 +261,7 @@ const firstLine = s => (String(s || '').split('\n').map(l => l.trim()).find(l =>
 // ---------- Pieces ----------
 function media(e, { big = false } = {}) {
   if (e.cover) return `<img src="${esc(e.cover)}" alt="" loading="${big ? 'eager' : 'lazy'}">`;
-  const sub = e.type === 'review' ? [e.year, e.director].filter(Boolean).join(' · ') : TYPES[e.type].label;
+  const sub = e.type === 'review' ? [e.year, e.director].filter(Boolean).join(' · ') : typeLabel(e.type);
   return `<div class="ph"><div class="ph-title">${esc(e.title)}</div>${sub ? `<div class="ph-sub">${esc(sub)}</div>` : ''}</div>`;
 }
 
@@ -196,7 +285,7 @@ function projectCard(e) {
   return `<a class="project-card" href="${urlOf(e)}">
     ${e.cover ? `<div class="project-cover">${media(e)}</div>` : ''}
     <div class="project-body">
-      ${e.status || e.published === false ? `<div class="card-meta">${e.status ? `<span class="pill" data-status="${esc(e.status)}">${esc(e.status)}</span>` : ''}${draftBadge(e)}</div>` : ''}
+      ${e.status || e.published === false ? `<div class="card-meta">${e.status ? `<span class="pill" data-status="${esc(e.status)}">${esc(statusLabel(e.status))}</span>` : ''}${draftBadge(e)}</div>` : ''}
       <h3>${esc(e.title)}</h3>
       ${e.summary ? `<p>${inlineText(e.summary)}</p>` : ''}
     </div>
@@ -211,11 +300,11 @@ function featuredCard(e) {
   const art = e.cover || e.type !== 'story'
     ? media(e, { big: true })
     : `<div class="featured-quote"><span>${esc(firstLine(e.body) || e.summary)}</span></div>`;
-  const cta = { review: 'Read the review', story: 'Read the story', project: 'See the project' }[e.type];
+  const cta = tr(`cta.${e.type}`);
   return `<a class="featured" href="${urlOf(e)}">
     <div class="featured-media">${art}</div>
     <div class="featured-body">
-      <p class="eyebrow">Featured · ${TYPES[e.type].label} ${draftBadge(e)}</p>
+      <p class="eyebrow">${tr('featured')} · ${typeLabel(e.type)} ${draftBadge(e)}</p>
       <h2>${esc(e.title)}</h2>
       ${e.type === 'review' && e.rating ? stars(e.rating) : ''}
       ${e.summary ? `<p>${inlineText(e.summary)}</p>` : ''}
@@ -225,8 +314,8 @@ function featuredCard(e) {
 }
 
 function emptyState(type) {
-  const add = state.editing ? `<br><a class="btn btn-primary" href="/edit/new/${type}">Add the first one</a>` : '';
-  return `<div class="empty">Nothing here yet.${add}</div>`;
+  const add = state.editing ? `<br><a class="btn btn-primary" href="/edit/new/${type}">${tr('addFirst')}</a>` : '';
+  return `<div class="empty">${tr('nothingYet')}${add}</div>`;
 }
 
 // ---------- Views ----------
@@ -238,14 +327,14 @@ function homeView() {
   const limits = { review: 6, story: 4, project: 3 };
   const stats = ORDER.map(t => {
     const n = ofType(t).length;
-    return n ? `<a href="/${TYPES[t].path}"><b>${n}</b>${plural(n, TYPES[t].count).replace(/^\d+ /, '')}</a>` : '';
+    return n ? `<a href="/${TYPES[t].path}"><b>${n}</b>${tr(`count.${t}`)[n === 1 ? 0 : 1]}</a>` : '';
   }).join('');
 
   const sections = ORDER.map(t => {
     const list = rest.filter(e => e.type === t).slice(0, limits[t]);
     if (!list.length && !state.editing) return '';
     return `<section class="sec">
-      <div class="sec-head"><h2>${esc(sectionTitle(t))}</h2><a class="more" href="/${TYPES[t].path}">See all →</a></div>
+      <div class="sec-head"><h2>${esc(sectionTitle(t))}</h2><a class="more" href="/${TYPES[t].path}">${tr('seeAll')}</a></div>
       ${list.length ? grid(t, list) : emptyState(t)}
     </section>`;
   }).join('');
@@ -254,12 +343,12 @@ function homeView() {
     title: '',
     html: `<div class="view">
       <section class="hero">
-        <h1 class="hero-title">${inlineText(s.tagline || s.name)}</h1>
-        ${s.intro ? `<p class="hero-intro">${inlineText(s.intro)}</p>` : ''}
+        <h1 class="hero-title">${inlineText(siteText('tagline') || s.name)}</h1>
+        ${siteText('intro') ? `<p class="hero-intro">${inlineText(siteText('intro'))}</p>` : ''}
         ${stats ? `<div class="hero-stats">${stats}</div>` : ''}
       </section>
       ${featured ? featuredCard(featured) : ''}
-      ${sections || (all.length ? '' : '<p class="empty">Nothing published yet. Check back soon.</p>')}
+      ${sections || (all.length ? '' : `<p class="empty">${tr('nothingPublished')}</p>`)}
     </div>`,
   };
 }
@@ -281,11 +370,11 @@ function listView(type) {
     return `/${TYPES[type].path}${s ? '?' + s : ''}`;
   };
   const chips = tags.length || type === 'review' ? `<div class="filters">
-      ${tags.length ? `<a class="chip" href="${esc(q({ sort }))}" aria-current="${!tag}">All</a>` : ''}
+      ${tags.length ? `<a class="chip" href="${esc(q({ sort }))}" aria-current="${!tag}">${tr('all')}</a>` : ''}
       ${tags.map(t => `<a class="chip" href="${esc(q({ tag: t, sort }))}" aria-current="${t === tag}">${esc(t)}</a>`).join('')}
       ${type === 'review' && list.length > 1 ? `<span class="spacer"></span>
-        <a class="chip" href="${esc(q({ tag }))}" aria-current="${sort !== 'rating'}">Newest</a>
-        <a class="chip" href="${esc(q({ tag, sort: 'rating' }))}" aria-current="${sort === 'rating'}">Top rated</a>` : ''}
+        <a class="chip" href="${esc(q({ tag }))}" aria-current="${sort !== 'rating'}">${tr('newest')}</a>
+        <a class="chip" href="${esc(q({ tag, sort: 'rating' }))}" aria-current="${sort === 'rating'}">${tr('topRated')}</a>` : ''}
     </div>` : '';
 
   return {
@@ -316,24 +405,24 @@ function tagRow(e) {
 
 function entryNav(e) {
   const list = ofType(e.type);
-  const i = list.indexOf(e);
+  const i = list.findIndex(x => x.id === e.id);
   const newer = list[i - 1], older = list[i + 1];
   if (!newer && !older) return '';
-  return `<nav class="entry-nav" aria-label="More">
-    ${older ? `<a href="${urlOf(older)}"><span class="eyebrow">← Previous</span><strong>${esc(older.title)}</strong></a>` : ''}
-    ${newer ? `<a class="next" href="${urlOf(newer)}"><span class="eyebrow">Next →</span><strong>${esc(newer.title)}</strong></a>` : ''}
+  return `<nav class="entry-nav" aria-label="${tr('more')}">
+    ${older ? `<a href="${urlOf(older)}"><span class="eyebrow">${tr('previous')}</span><strong>${esc(older.title)}</strong></a>` : ''}
+    ${newer ? `<a class="next" href="${urlOf(newer)}"><span class="eyebrow">${tr('next')}</span><strong>${esc(newer.title)}</strong></a>` : ''}
   </nav>`;
 }
 
 function entryView(type, slug) {
   const e = ofType(type).find(x => x.slug === slug);
   if (!e) return notFoundView();
-  const eyebrow = extra => `<p class="eyebrow"><a href="/${TYPES[type].path}">${TYPES[type].label}</a>${extra || ''} ${draftBadge(e)}</p>`;
+  const eyebrow = extra => `<p class="eyebrow"><a href="/${TYPES[type].path}">${typeLabel(type)}</a>${extra || ''} ${draftBadge(e)}</p>`;
   const lede = e.summary ? `<p class="lede">${inlineText(e.summary)}</p>` : '';
   let html;
 
   if (type === 'review') {
-    const meta = [e.year && esc(e.year), e.director && `Directed by ${esc(e.director)}`, e.date && `Watched ${fmtDate(e.date)}`].filter(Boolean);
+    const meta = [e.year && esc(e.year), e.director && tr('directedBy', { x: esc(e.director) }), e.date && tr('watched', { x: fmtDate(e.date) })].filter(Boolean);
     html = `<article class="entry view">
       ${entryTools(e)}
       <div class="review-layout">
@@ -367,7 +456,7 @@ function entryView(type, slug) {
       </div>
     </article>`;
   } else {
-    const meta = [e.status && `<span class="pill" data-status="${esc(e.status)}">${esc(e.status)}</span>`, e.role && `<span>${esc(e.role)}</span>`, e.date && `<span>${fmtDate(e.date, { month: 'long', year: 'numeric' })}</span>`].filter(Boolean);
+    const meta = [e.status && `<span class="pill" data-status="${esc(e.status)}">${esc(statusLabel(e.status))}</span>`, e.role && `<span>${esc(e.role)}</span>`, e.date && `<span>${fmtDate(e.date, { month: 'long', year: 'numeric' })}</span>`].filter(Boolean);
     const link = safeHref(e.link);
     html = `<article class="entry view">
       ${entryTools(e)}
@@ -375,7 +464,7 @@ function entryView(type, slug) {
       <h1>${esc(e.title)}</h1>
       ${meta.length ? `<div class="entry-meta">${meta.join('')}</div>` : ''}
       ${lede}
-      ${link ? `<p><a class="btn" style="margin-top:24px" href="${esc(link)}" target="_blank" rel="noopener">Visit project ↗</a></p>` : ''}
+      ${link ? `<p><a class="btn" style="margin-top:24px" href="${esc(link)}" target="_blank" rel="noopener">${tr('visitProject')}</a></p>` : ''}
       ${e.cover ? `<div class="entry-cover">${media(e, { big: true })}</div>` : ''}
       <div class="prose">${md(e.body)}</div>
       ${tagRow(e)}
@@ -394,28 +483,28 @@ function commentsBlock(e) {
   try { savedName = localStorage.getItem(NAME_KEY) || ''; } catch {}
   const form = open ? `<form class="comment-form" data-comment-form novalidate>
       ${state.editing
-        ? `<p class="hint">Posting as <b>${esc(state.content.site.name)}</b> (author).</p>`
-        : `<label class="field"><span class="label">Name</span><input class="input" name="name" maxlength="60" autocomplete="name" value="${esc(savedName)}" required></label>`}
-      <label class="field"><span class="label">Comment</span><textarea class="input" name="text" rows="4" maxlength="2000" required></textarea></label>
+        ? `<p class="hint">${tr('postingAs', { x: esc(state.content.site.name) })}</p>`
+        : `<label class="field"><span class="label">${tr('name')}</span><input class="input" name="name" maxlength="60" autocomplete="name" value="${esc(savedName)}" required></label>`}
+      <label class="field"><span class="label">${tr('comment')}</span><textarea class="input" name="text" rows="4" maxlength="2000" required></textarea></label>
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="comment-actions">
-        <span class="hint">${state.editing ? '' : 'Be kind. Comments show up right away.'}</span>
-        <button class="btn btn-primary btn-sm" type="submit">Post comment</button>
+        <span class="hint">${state.editing ? '' : tr('beKind')}</span>
+        <button class="btn btn-primary btn-sm" type="submit">${tr('post')}</button>
       </div>
-    </form>` : '<p class="hint">Comments are closed.</p>';
+    </form>` : `<p class="hint">${tr('commentsClosed')}</p>`;
   return `<section class="comments" id="comments" data-comments="${esc(e.id)}">
-    <h2>Comments <span data-comment-count></span></h2>
-    <div class="comment-list" data-comment-list><p class="hint">Loading comments…</p></div>
+    <h2>${tr('comments')} <span data-comment-count></span></h2>
+    <div class="comment-list" data-comment-list><p class="hint">${tr('loadingComments')}</p></div>
     ${form}
   </section>`;
 }
 
 function commentHtml(c) {
-  const del = state.editing ? `<button class="btn btn-ghost btn-sm" type="button" data-delete-comment="${esc(c.id)}">Delete</button>` : '';
+  const del = state.editing ? `<button class="btn btn-ghost btn-sm" type="button" data-delete-comment="${esc(c.id)}">${tr('delete')}</button>` : '';
   const when = new Date(c.date);
-  const date = isNaN(when) ? '' : when.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const date = isNaN(when) ? '' : when.toLocaleDateString(locale(), { month: 'short', day: 'numeric', year: 'numeric' });
   return `<article class="comment${c.owner ? ' is-owner' : ''}" data-comment="${esc(c.id)}">
-    <header><strong>${esc(c.name)}</strong>${c.owner ? '<span class="badge">Author</span>' : ''}<time datetime="${esc(c.date)}">${date}</time>${del}</header>
+    <header><strong>${esc(c.name)}</strong>${c.owner ? `<span class="badge">${tr('author')}</span>` : ''}<time datetime="${esc(c.date)}">${date}</time>${del}</header>
     <div class="comment-text">${String(c.text).split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join('')}</div>
   </article>`;
 }
@@ -430,7 +519,7 @@ async function mountComments(e) {
   let comments = [];
   const draw = () => {
     count.textContent = comments.length ? String(comments.length) : '';
-    list.innerHTML = comments.length ? comments.map(commentHtml).join('') : '<p class="hint">No comments yet. Start the conversation.</p>';
+    list.innerHTML = comments.length ? comments.map(commentHtml).join('') : `<p class="hint">${tr('noComments')}</p>`;
   };
 
   try {
@@ -440,18 +529,18 @@ async function mountComments(e) {
     token = res.token;
     draw();
   } catch {
-    if (box.isConnected) list.innerHTML = '<p class="hint">Comments couldn\'t load.</p>';
+    if (box.isConnected) list.innerHTML = `<p class="hint">${tr('commentsFailed')}</p>`;
   }
 
   list.addEventListener('click', async ev => {
     const btn = ev.target.closest('[data-delete-comment]');
-    if (!btn || !confirm('Delete this comment?')) return;
+    if (!btn || !confirm(tr('deleteCommentQ'))) return;
     btn.disabled = true;
     try {
       await api(`/api/comments?entry=${encodeURIComponent(e.id)}&comment=${encodeURIComponent(btn.dataset.deleteComment)}`, { method: 'DELETE' });
       comments = comments.filter(c => c.id !== btn.dataset.deleteComment);
       draw();
-      toast('Comment deleted');
+      toast(tr('commentDeleted'));
     } catch (err) { toast(err.message, true); btn.disabled = false; }
   });
 
@@ -461,15 +550,15 @@ async function mountComments(e) {
     const f = form.elements;
     const name = f.name ? f.name.value.trim() : '';
     const text = f.text.value.trim();
-    if ((f.name && !name) || !text) { toast('Add your name and a comment.', true); return; }
+    if ((f.name && !name) || !text) { toast(tr('commentNeedText'), true); return; }
     const btn = $('[type=submit]', form);
     btn.disabled = true;
     try {
-      const res = await api('/api/comments', { method: 'POST', body: { entry: e.id, name, text, token, website: f.website.value } });
+      const res = await api('/api/comments', { method: 'POST', body: { entry: e.id, name, text, token, website: f.website.value, lang: state.lang } });
       if (res.comment) { comments.push(res.comment); draw(); }
       f.text.value = '';
       if (name) { try { localStorage.setItem(NAME_KEY, name); } catch {} }
-      toast('Comment posted');
+      toast(tr('commentPosted'));
     } catch (err) { toast(err.message, true); }
     btn.disabled = false;
   });
@@ -478,17 +567,17 @@ async function mountComments(e) {
 function aboutView() {
   const s = state.content.site;
   const links = [
-    ...(s.email ? [{ label: 'Email', url: `mailto:${s.email}`, show: s.email }] : []),
+    ...(s.email ? [{ label: tr('email'), url: `mailto:${s.email}`, show: s.email }] : []),
     ...s.links.map(l => ({ ...l, show: l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') })),
   ].filter(l => safeHref(l.url));
   return {
-    title: 'About',
+    title: tr('nav.about'),
     html: `<div class="about view ${s.photo ? '' : 'no-photo'}">
       ${s.photo ? `<div class="about-photo"><img src="${esc(s.photo)}" alt="${esc(s.name)}"></div>` : ''}
       <div>
-        <p class="eyebrow">About</p>
+        <p class="eyebrow">${tr('nav.about')}</p>
         <h1 style="margin-top:16px">${esc(s.name)}</h1>
-        <div class="prose">${md(s.about) || '<p>Nothing here yet.</p>'}</div>
+        <div class="prose">${md(siteText('about')) || `<p>${tr('nothingYet')}</p>`}</div>
         ${links.length ? `<div class="about-links">${links.map(l => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${esc(l.label)}<span>${esc(l.show)}</span></a>`).join('')}</div>` : ''}
       </div>
     </div>`,
@@ -496,13 +585,13 @@ function aboutView() {
 }
 
 function notFoundView() {
-  return { title: 'Not found', html: `<div class="notfound view"><h1>Lost the plot.</h1><p>That page doesn't exist (or has moved).</p><p><a class="btn" href="/">Go home</a></p></div>` };
+  return { title: tr('notFound'), html: `<div class="notfound view"><h1>${tr('notFoundTitle')}</h1><p>${tr('notFoundText')}</p><p><a class="btn" href="/">${tr('goHome')}</a></p></div>` };
 }
 
 function lockedView() {
   return {
-    title: 'Edit mode',
-    html: `<div class="notfound view"><h1>Edit mode</h1><p>Unlock with the edit code to continue.</p><p><button class="btn btn-primary" type="button" data-unlock>Unlock</button></p></div>`,
+    title: tr('editMode'),
+    html: `<div class="notfound view"><h1>${tr('editMode')}</h1><p>${tr('unlockPrompt')}</p><p><button class="btn btn-primary" type="button" data-unlock>${tr('unlock')}</button></p></div>`,
     mount: () => openUnlock(),
   };
 }
@@ -529,6 +618,7 @@ function editorView({ id, type }) {
   if (id && !existing) return notFoundView();
   const e = { ...blankEntry(type || 'review'), ...(existing ? structuredClone(existing) : {}) };
   const L = LABELS[e.type];
+  const es = e.es || {};
   const cancel = existing ? urlOf(existing) : `/${TYPES[e.type].path}`;
 
   return {
@@ -543,11 +633,25 @@ function editorView({ id, type }) {
       </div>
       <div class="editor-grid">
         <div>
-          <input class="input title-input" name="title" value="${esc(e.title)}" placeholder="${L.title}" aria-label="Title" maxlength="200">
-          <label class="field">
-            <span class="label" data-l="summary">${L.summary}</span>
-            <textarea class="input" name="summary" rows="2" maxlength="600">${esc(e.summary)}</textarea>
-          </label>
+          <div class="tabs lang-tabs" role="tablist" aria-label="Language">
+            <button class="tab" type="button" role="tab" data-edit-lang="en" aria-selected="true">English</button>
+            <button class="tab" type="button" role="tab" data-edit-lang="es" aria-selected="false">Español${es.title || es.summary || es.body ? ' ✓' : ''}</button>
+          </div>
+          <div data-pane="en">
+            <input class="input title-input" name="title" value="${esc(e.title)}" placeholder="${L.title}" aria-label="Title" maxlength="200">
+            <label class="field">
+              <span class="label" data-l="summary">${L.summary}</span>
+              <textarea class="input" name="summary" rows="2" maxlength="600">${esc(e.summary)}</textarea>
+            </label>
+          </div>
+          <div data-pane="es" hidden>
+            <p class="hint lang-hint">Optional Spanish version, shown when visitors switch to ES. Anything left blank shows the English text.</p>
+            <input class="input title-input" name="title_es" value="${esc(es.title)}" placeholder="Título en español" aria-label="Spanish title" maxlength="200">
+            <label class="field">
+              <span class="label" data-l="summary">${L.summary}</span>
+              <textarea class="input" name="summary_es" rows="2" maxlength="600">${esc(es.summary)}</textarea>
+            </label>
+          </div>
           <div class="field">
             <div class="body-head">
               <span class="label" data-l="body">${L.body}</span>
@@ -569,7 +673,8 @@ function editorView({ id, type }) {
                 <button type="button" data-tool="image" title="Insert image">Image</button>
                 <input type="file" accept="image/*" hidden data-body-image>
               </div>
-              <textarea class="input body-input" name="body" aria-label="Body">${esc(e.body)}</textarea>
+              <textarea class="input body-input" name="body" aria-label="Body" data-pane="en">${esc(e.body)}</textarea>
+              <textarea class="input body-input" name="body_es" aria-label="Spanish body" data-pane="es" hidden>${esc(es.body)}</textarea>
             </div>
             <div class="prose preview" data-preview hidden></div>
             <p class="hint">Each line is a paragraph. <code>**bold**</code> <code>*italic*</code> <code># Heading</code> <code>&gt; quote</code> <code>* * *</code> scene break. <kbd>Ctrl/⌘ S</kbd> saves.</p>
@@ -658,6 +763,8 @@ function mountEditor(entry, existing) {
   const form = $('#editor');
   const f = form.elements;
   const body = f.body;
+  let editLang = 'en';
+  const cur = () => (editLang === 'es' ? f.body_es : body);
 
   form.addEventListener('input', () => { state.dirty = true; });
   form.addEventListener('change', () => { state.dirty = true; });
@@ -667,7 +774,7 @@ function mountEditor(entry, existing) {
     const L = LABELS[t];
     $('[data-type-label]', form).textContent = TYPES[t].label;
     f.title.placeholder = L.title;
-    for (const k of ['summary', 'body', 'date']) $(`[data-l="${k}"]`, form).textContent = L[k];
+    for (const k of ['summary', 'body', 'date']) $$(`[data-l="${k}"]`, form).forEach(el => { el.textContent = L[k]; });
     $('[data-cover-label]', form).textContent = L.cover;
     $('[data-zone="cover"]', form).classList.toggle('is-poster', t === 'review');
     $$('[data-for]', form).forEach(p => { p.hidden = p.dataset.for !== t; });
@@ -676,7 +783,7 @@ function mountEditor(entry, existing) {
   setType();
 
   requestAnimationFrame(() => autosize(body));
-  body.addEventListener('input', () => autosize(body));
+  for (const ta of [body, f.body_es]) ta.addEventListener('input', () => autosize(ta));
 
   const out = $('[data-rating-out]', form);
   const showRating = () => {
@@ -688,28 +795,40 @@ function mountEditor(entry, existing) {
 
   // Write / Preview
   const write = $('[data-write]', form), preview = $('[data-preview]', form);
-  $$('.tab', form).forEach(tab => tab.addEventListener('click', () => {
+  const showPreview = () => {
+    preview.innerHTML = md(cur().value) || '<p class="hint">Nothing written yet.</p>';
+    preview.classList.toggle('story-prose', f.type.value === 'story');
+  };
+  $$('[data-tab]', form).forEach(tab => tab.addEventListener('click', () => {
     const show = tab.dataset.tab === 'preview';
-    $$('.tab', form).forEach(x => x.setAttribute('aria-selected', String(x === tab)));
+    $$('[data-tab]', form).forEach(x => x.setAttribute('aria-selected', String(x === tab)));
     write.hidden = show;
     preview.hidden = !show;
-    if (show) preview.innerHTML = md(body.value) || '<p class="hint">Nothing written yet.</p>';
-    if (show) preview.classList.toggle('story-prose', f.type.value === 'story');
+    if (show) showPreview();
+  }));
+
+  // English / Español versions
+  $$('[data-edit-lang]', form).forEach(tab => tab.addEventListener('click', () => {
+    editLang = tab.dataset.editLang;
+    $$('[data-edit-lang]', form).forEach(x => x.setAttribute('aria-selected', String(x === tab)));
+    $$('[data-pane]', form).forEach(el => { el.hidden = el.dataset.pane !== editLang; });
+    if (!preview.hidden) showPreview();
+    requestAnimationFrame(() => autosize(cur()));
   }));
 
   // Formatting toolbar
   const bodyImage = $('[data-body-image]', form);
   const tools = {
-    bold: () => wrapSel(body, '**', 'bold text'),
-    italic: () => wrapSel(body, '*', 'italic text'),
-    heading: () => prefixSel(body, '## ', 'Heading'),
-    quote: () => prefixSel(body, '> ', 'Quote'),
-    list: () => prefixSel(body, '- ', 'List item'),
-    break: () => edit(body, (sel, value, a) => [lineStart(value, a) + '* * *\n']),
+    bold: () => wrapSel(cur(), '**', 'bold text'),
+    italic: () => wrapSel(cur(), '*', 'italic text'),
+    heading: () => prefixSel(cur(), '## ', 'Heading'),
+    quote: () => prefixSel(cur(), '> ', 'Quote'),
+    list: () => prefixSel(cur(), '- ', 'List item'),
+    break: () => edit(cur(), (sel, value, a) => [lineStart(value, a) + '* * *\n']),
     link: () => {
       const url = prompt('Link to (https://…)');
       if (!url) return;
-      edit(body, sel => { const t = sel || 'link text'; return [`[${t}](${url.trim()})`, 1, 1 + t.length]; });
+      edit(cur(), sel => { const t = sel || 'link text'; return [`[${t}](${url.trim()})`, 1, 1 + t.length]; });
     },
     image: () => bodyImage.click(),
   };
@@ -721,7 +840,7 @@ function mountEditor(entry, existing) {
     toast('Uploading image…');
     try {
       const url = await uploadImage(file);
-      edit(body, (sel, value, a) => [`${lineStart(value, a)}![](${url})\n`]);
+      edit(cur(), (sel, value, a) => [`${lineStart(value, a)}![](${url})\n`]);
       toast('Image added');
     } catch (err) { toast(err.message, true); }
   });
@@ -731,7 +850,12 @@ function mountEditor(entry, existing) {
 
   const save = async () => {
     const title = f.title.value.trim();
-    if (!title) { toast('Give it a title first.', true); f.title.focus(); return; }
+    if (!title) {
+      toast('Give it an English title first.', true);
+      $('[data-edit-lang="en"]', form).click();
+      f.title.focus();
+      return;
+    }
     const type = f.type.value;
     const next = {
       id: entry.id,
@@ -745,6 +869,7 @@ function mountEditor(entry, existing) {
       summary: f.summary.value.trim(),
       body: body.value.replace(/\s+$/, ''),
       tags: parseTags(f.tags.value),
+      es: { title: f.title_es.value.trim(), summary: f.summary_es.value.trim(), body: f.body_es.value.replace(/\s+$/, '') },
     };
     if (type === 'review') Object.assign(next, { year: f.year.value.trim(), director: f.director.value.trim(), rating: Number(f.rating.value) || 0 });
     if (type === 'project') Object.assign(next, { status: f.pstatus.value, role: f.role.value.trim(), link: safeHref(f.link.value) });
@@ -885,6 +1010,22 @@ function settingsView() {
           <label class="field"><span class="label">About you</span><textarea class="input" name="about" rows="8" style="font-family:var(--font-read);font-size:17px;line-height:1.7">${esc(s.about)}</textarea></label>
         </div>
         <div class="panel span">
+          <p class="panel-title">En español <span class="hint" style="font-weight:400">(optional, shown when visitors switch to ES; blank fields show the English text)</span></p>
+          <div class="settings-grid">
+            <div>
+              <label class="field"><span class="label">Headline (ES)</span><input class="input" name="tagline_es" value="${esc(s.es.tagline)}" maxlength="200"></label>
+              <label class="field"><span class="label">Intro (ES)</span><textarea class="input" name="intro_es" rows="3" maxlength="1000">${esc(s.es.intro)}</textarea></label>
+            </div>
+            <label class="field"><span class="label">About you (ES)</span><textarea class="input" name="about_es" rows="6" style="font-family:var(--font-read);font-size:17px;line-height:1.7">${esc(s.es.about)}</textarea></label>
+          </div>
+          <div class="settings-grid" style="margin-top:8px">
+            ${ORDER.map(t => `<div>
+              <label class="field"><span class="label">${STR.es[`nav.${t}`]} title (ES)</span><input class="input" name="sec-title-es-${t}" value="${esc(s.es.sections[t].title)}" placeholder="${esc(STR.es[`sec.${t}`])}" maxlength="80"></label>
+              <label class="field"><span class="label">${STR.es[`nav.${t}`]} intro (ES)</span><textarea class="input" name="sec-intro-es-${t}" rows="2" placeholder="${esc(STR.es[`intro.${t}`])}" maxlength="600">${esc(s.es.sections[t].intro)}</textarea></label>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="panel span">
           <p class="panel-title">Links</p>
           <div class="link-rows" data-links>${s.links.map(linkRow).join('')}</div>
           <button class="btn btn-sm" type="button" data-add-link>+ Add link</button>
@@ -943,6 +1084,12 @@ function mountSettings() {
         .map(l => ({ ...l, url: l.url && !/^[a-z]+:/i.test(l.url) ? 'https://' + l.url : l.url }))
         .filter(l => l.label && safeHref(l.url)),
       sections: Object.fromEntries(ORDER.map(t => [t, { title: f[`sec-title-${t}`].value.trim(), intro: f[`sec-intro-${t}`].value.trim() }])),
+      es: {
+        tagline: f.tagline_es.value.trim(),
+        intro: f.intro_es.value.trim(),
+        about: f.about_es.value.replace(/\s+$/, ''),
+        sections: Object.fromEntries(ORDER.map(t => [t, { title: f[`sec-title-es-${t}`].value.trim(), intro: f[`sec-intro-es-${t}`].value.trim() }])),
+      },
     };
     const btn = $('[type=submit]', form);
     btn.disabled = true;
@@ -982,9 +1129,9 @@ dialog.querySelector('form').addEventListener('submit', async ev => {
     dialog.close();
     if (location.pathname === '/edit') history.replaceState(null, '', '/');
     render();
-    toast(res && res.warning ? res.warning : 'Edit mode on', Boolean(res && res.warning));
+    toast(res && res.warning ? res.warning : tr('editOn'), Boolean(res && res.warning));
   } catch (err) {
-    $('[data-error]', dialog).textContent = err.message;
+    $('[data-error]', dialog).textContent = err.status === 401 ? tr('badCode') : err.message;
     input.select();
   }
   btn.disabled = false;
@@ -1001,7 +1148,7 @@ function lock({ quiet = false } = {}) {
   state.dirty = false;
   if (/^\/(edit|settings)(\/|$)/.test(location.pathname)) history.replaceState(null, '', '/');
   render();
-  if (!quiet) toast('Locked');
+  if (!quiet) toast(tr('locked'));
   loadContent().then(render).catch(() => {});
 }
 
@@ -1049,7 +1196,11 @@ function renderChrome(r) {
   document.body.classList.toggle('editing', state.editing);
   $('[data-brand]').textContent = s.name;
   const current = r.view === 'about' ? 'about' : r.type ? TYPES[r.type].path : '';
-  $('[data-nav]').innerHTML = [...ORDER.map(t => [TYPES[t].path, TYPES[t].nav]), ['about', 'About']]
+  document.documentElement.lang = state.lang;
+  $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
+  $$('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang)));
+  $('[data-lang-switch]').setAttribute('aria-label', tr('language'));
+  $('[data-nav]').innerHTML = [...ORDER.map(t => [TYPES[t].path, tr(`nav.${t}`)]), ['about', tr('nav.about')]]
     .map(([p, label]) => `<a href="/${p}"${p === current && r.view !== 'editor' ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   $('[data-copy]').textContent = `© ${new Date().getFullYear()} ${s.name}`;
   $('[data-footer-links]').innerHTML = s.links.filter(l => safeHref(l.url))
@@ -1073,7 +1224,19 @@ function go(href, { replace = false } = {}) {
   $('#main').focus({ preventScroll: true });
 }
 
+function setLang(lang) {
+  if (lang === state.lang || !STR[lang]) return;
+  state.lang = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  if (state.dirty) { renderChrome(route()); return; } // don't wipe an open editor
+  const y = window.scrollY;
+  render();
+  window.scrollTo(0, y);
+}
+
 document.addEventListener('click', ev => {
+  const langBtn = ev.target.closest('[data-lang]');
+  if (langBtn) { setLang(langBtn.dataset.lang); return; }
   if (ev.target.closest('[data-unlock]')) { openUnlock(); return; }
   if (ev.target.closest('[data-lock]')) { if (confirmLeave()) lock(); return; }
   const a = ev.target.closest('a');
@@ -1118,6 +1281,8 @@ function toast(msg, isError = false) {
 
 // ---------- Boot ----------
 (async function boot() {
+  document.documentElement.lang = state.lang;
+  $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
   if (state.code) {
     try {
       await api('/api/auth', { method: 'POST', body: { code: state.code } });
@@ -1129,7 +1294,7 @@ function toast(msg, isError = false) {
   try {
     await loadContent();
   } catch {
-    $('#main').innerHTML = '<div class="notfound"><h1>Hmm.</h1><p>The site couldn\'t load. Try refreshing.</p></div>';
+    $('#main').innerHTML = `<div class="notfound"><h1>${tr('loadFailTitle')}</h1><p>${tr('loadFailText')}</p></div>`;
     return;
   }
   render();

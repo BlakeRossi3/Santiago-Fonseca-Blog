@@ -76,7 +76,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; line-height
   font-family: var(--font-display); font-size: 27px; line-height: 1;
   text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.nav { display: flex; gap: 2px; flex-shrink: 0; }
+.nav { display: flex; gap: 2px; flex-shrink: 0; margin-left: auto; }
 .nav a {
   position: relative;
   padding: 8px 12px;
@@ -89,10 +89,22 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; line-height
   content: ""; position: absolute; left: 12px; right: 12px; bottom: 1px;
   height: 2px; border-radius: 2px; background: var(--accent);
 }
+.lang-switch { display: flex; flex-shrink: 0; padding: 2px; border: 1px solid var(--line-strong); border-radius: 999px; }
+.lang-switch button {
+  padding: 5px 9px; border: 0; border-radius: 999px; background: none; cursor: pointer;
+  font: 600 11px/1 var(--font-ui); letter-spacing: 0.08em; color: var(--text-faint);
+  transition: color 0.15s, background 0.15s;
+}
+.lang-switch button:hover { color: var(--text); }
+.lang-switch button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink); }
 @media (max-width: 640px) {
-  .header-inner { flex-direction: column; align-items: flex-start; height: auto; gap: 4px; padding-top: 14px; padding-bottom: 4px; }
-  .brand { font-size: 25px; max-width: 100%; }
-  .nav { margin-left: -12px; }
+  .header-inner {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand lang" "nav nav";
+    align-items: center; height: auto; gap: 4px 12px; padding-top: 14px; padding-bottom: 4px;
+  }
+  .brand { grid-area: brand; font-size: 25px; max-width: 100%; }
+  .lang-switch { grid-area: lang; }
+  .nav { grid-area: nav; margin-left: -12px; }
 }
 
 main.wrap { flex: 1; outline: none; padding-bottom: 96px; }
@@ -428,6 +440,8 @@ input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color:
 .segmented input:checked + span { background: var(--bg-hover); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); }
 .segmented input:focus-visible + span { outline: 2px solid var(--accent-ink); }
 
+.lang-tabs { margin-bottom: 18px; }
+.lang-hint { margin-bottom: 14px; }
 .body-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .tabs { display: flex; gap: 2px; }
 .tab { padding: 6px 12px; border: 0; border-radius: 6px; background: none; font-size: 13px; color: var(--text-faint); cursor: pointer; }

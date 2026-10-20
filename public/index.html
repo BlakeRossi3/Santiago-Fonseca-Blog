@@ -14,53 +14,57 @@
   <script type="module" src="/app.js"></script>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="/" data-brand></a>
       <nav class="nav" aria-label="Main" data-nav></nav>
+      <div class="lang-switch" role="group" aria-label="Language" data-lang-switch>
+        <button type="button" data-lang="en" lang="en" title="English">EN</button>
+        <button type="button" data-lang="es" lang="es" title="Español">ES</button>
+      </div>
     </div>
   </header>
 
   <main id="main" class="wrap" tabindex="-1">
-    <p class="loading">Loading…</p>
+    <p class="loading" data-i18n="loading">Loading…</p>
   </main>
 
   <footer class="site-footer">
     <div class="wrap footer-inner">
       <span data-copy></span>
       <span class="footer-links" data-footer-links></span>
-      <button class="edit-link" type="button" data-unlock>Edit</button>
+      <button class="edit-link" type="button" data-unlock data-i18n="edit">Edit</button>
     </div>
   </footer>
 
   <div class="editbar" data-editbar hidden>
-    <span class="editbar-label"><span>Editing</span></span>
+    <span class="editbar-label"><span data-i18n="editing">Editing</span></span>
     <details class="newmenu">
-      <summary class="btn btn-sm btn-primary">New</summary>
+      <summary class="btn btn-sm btn-primary" data-i18n="new">New</summary>
       <div class="newmenu-list">
-        <a href="/edit/new/review">Film review</a>
-        <a href="/edit/new/story">Short story</a>
-        <a href="/edit/new/project">Project</a>
+        <a href="/edit/new/review" data-i18n="type.review">Film review</a>
+        <a href="/edit/new/story" data-i18n="type.story">Short story</a>
+        <a href="/edit/new/project" data-i18n="type.project">Project</a>
       </div>
     </details>
-    <a class="btn btn-sm" href="/settings">Site settings</a>
-    <button class="btn btn-sm btn-ghost" type="button" data-lock>Lock</button>
+    <a class="btn btn-sm" href="/settings" data-i18n="siteSettings">Site settings</a>
+    <button class="btn btn-sm btn-ghost" type="button" data-lock data-i18n="lock">Lock</button>
   </div>
 
   <dialog class="modal" id="unlock">
     <form method="dialog" class="unlock-form">
-      <h2>Edit mode</h2>
-      <p>Enter the edit code to make changes.</p>
+      <h2 data-i18n="editMode">Edit mode</h2>
+      <p data-i18n="enterCode">Enter the edit code to make changes.</p>
       <label class="field">
-        <span class="label">Edit code</span>
+        <span class="label" data-i18n="editCode">Edit code</span>
         <input class="input" type="password" name="code" autocomplete="current-password" required>
       </label>
       <p class="form-error" data-error role="alert"></p>
       <div class="modal-actions">
-        <button class="btn btn-ghost" type="button" value="cancel" data-cancel>Cancel</button>
-        <button class="btn btn-primary" type="submit">Unlock</button>
+        <button class="btn btn-ghost" type="button" value="cancel" data-cancel data-i18n="cancel">Cancel</button>
+        <button class="btn btn-primary" type="submit" data-i18n="unlock">Unlock</button>
       </div>
     </form>
   </dialog>

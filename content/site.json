@@ -9,9 +9,37 @@
     "links": [],
     "comments": true,
     "sections": {
-      "review": { "title": "", "intro": "" },
-      "story": { "title": "", "intro": "" },
-      "project": { "title": "", "intro": "" }
+      "review": {
+        "title": "",
+        "intro": ""
+      },
+      "story": {
+        "title": "",
+        "intro": ""
+      },
+      "project": {
+        "title": "",
+        "intro": ""
+      }
+    },
+    "es": {
+      "tagline": "Apuntes sobre cine, ficción breve y *otras cosas que hago*.",
+      "intro": "Un registro de lo que veo, escribo y construyo. Empieza por donde quieras.",
+      "about": "Esta es la página «Sobre mí». Cuenta quién eres, qué haces y en qué estás trabajando ahora.\n\nPuedes cambiar todo esto, y todo lo demás del sitio, en el modo edición: pulsa **Editar** al pie de cualquier página e introduce tu código.",
+      "sections": {
+        "review": {
+          "title": "",
+          "intro": ""
+        },
+        "story": {
+          "title": "",
+          "intro": ""
+        },
+        "project": {
+          "title": "",
+          "intro": ""
+        }
+      }
     }
   },
   "entries": [
@@ -26,7 +54,14 @@
       "cover": "",
       "summary": "Every night for thirty years, Mara ran the last reel for an empty room. Tonight, someone stayed.",
       "body": "Every night for thirty years, Mara ran the last reel for an empty room.\nThe late show at the Orpheum had never been popular. By the time the credits rolled the ushers were gone, the popcorn machine had gone quiet, and the only sound in the building was the projector ticking behind her like a second heart.\nShe didn't mind. She liked the films better when no one was watching them. They seemed to relax.\n* * *\nThe man in row F arrived halfway through. She saw him through the little square window: a dark shape against the silver light, hat still on, not moving.\nWhen the reel ended she waited for him to leave. He didn't.\n\"We're closed,\" she said from the aisle.\n\"I know,\" he said. \"I was waiting for the part they cut.\"\nMara looked at him for a long moment. Then she went back up the stairs, opened the cabinet she hadn't opened since 1994, and threaded the last reel by hand.\n(This is a sample story. Replace it with your own from edit mode.)",
-      "tags": ["Flash fiction"]
+      "tags": [
+        "Flash fiction"
+      ],
+      "es": {
+        "title": "El proyeccionista",
+        "summary": "Cada noche, durante treinta años, Mara proyectó el último rollo para una sala vacía. Esta noche, alguien se quedó.",
+        "body": "Cada noche, durante treinta años, Mara proyectó el último rollo para una sala vacía.\nLa última función del Orpheum nunca había sido popular. Cuando pasaban los créditos, los acomodadores ya se habían ido, la máquina de palomitas se había callado y el único sonido en el edificio era el proyector latiendo detrás de ella como un segundo corazón.\nA ella no le importaba. Le gustaban más las películas cuando nadie las miraba. Parecían relajarse.\n* * *\nEl hombre de la fila F llegó a mitad de la película. Lo vio por la ventanita cuadrada: una silueta oscura contra la luz plateada, con el sombrero puesto, inmóvil.\nCuando terminó el rollo, esperó a que se fuera. No se fue.\n—Ya cerramos —dijo ella desde el pasillo.\n—Lo sé —dijo él—. Estaba esperando la parte que cortaron.\nMara lo miró un largo rato. Luego volvió a subir las escaleras, abrió el armario que no abría desde 1994 y enhebró el último rollo a mano.\n(Este es un cuento de ejemplo. Sustitúyelo por uno tuyo desde el modo edición.)"
+      }
     },
     {
       "id": "sample-review-1",
@@ -39,10 +74,17 @@
       "cover": "",
       "summary": "A film about the distance between people, measured in miles and then in feet and then in nothing at all.",
       "body": "Wenders shoots the American Southwest like it's the surface of a planet nobody has bothered to name. Travis walks out of it at the start and spends the rest of the film trying to walk back into his own life.\nThe peep-show scene is the whole movie in miniature: two people who can't look at each other, talking through glass, finally saying the true thing because they can't see the other person's face.\nRy Cooder's slide guitar does half the acting. Harry Dean Stanton does the other half without seeming to try.\n(Sample review — swap it for your own.)",
-      "tags": ["Drama", "Road movie"],
+      "tags": [
+        "Drama",
+        "Road movie"
+      ],
       "year": "1984",
       "director": "Wim Wenders",
-      "rating": 4.5
+      "rating": 4.5,
+      "es": {
+        "summary": "Una película sobre la distancia entre las personas, medida en millas, luego en pasos y al final en nada.",
+        "body": "Wenders filma el suroeste americano como si fuera la superficie de un planeta al que nadie se ha molestado en ponerle nombre. Travis sale caminando de él al principio y pasa el resto de la película intentando volver a entrar en su propia vida.\nLa escena del peep show es toda la película en miniatura: dos personas que no pueden mirarse, hablando a través de un cristal, diciendo por fin la verdad porque no pueden verse la cara.\nLa guitarra slide de Ry Cooder hace la mitad de la actuación. Harry Dean Stanton hace la otra mitad sin que parezca que lo intenta.\n(Reseña de ejemplo: cámbiala por una tuya.)"
+      }
     },
     {
       "id": "sample-review-2",
@@ -55,10 +97,18 @@
       "cover": "",
       "summary": "Quiet, precise, and devastating in the way only restraint can be.",
       "body": "Nothing much happens and everything does. Celine Song trusts silence more than most first-time directors would dare, and it pays off in a final walk to a taxi that lasts about a minute and feels like twenty-four years.\n(Sample review — swap it for your own.)",
-      "tags": ["Drama", "Romance"],
+      "tags": [
+        "Drama",
+        "Romance"
+      ],
       "year": "2023",
       "director": "Celine Song",
-      "rating": 4
+      "rating": 4,
+      "es": {
+        "title": "Vidas pasadas",
+        "summary": "Tranquila, precisa y devastadora como solo puede serlo la contención.",
+        "body": "No pasa casi nada y pasa todo. Celine Song confía en el silencio más de lo que se atrevería la mayoría de los directores debutantes, y le sale bien en un último paseo hasta un taxi que dura un minuto y se siente como veinticuatro años.\n(Reseña de ejemplo: cámbiala por una tuya.)"
+      }
     },
     {
       "id": "sample-project",
@@ -71,10 +121,17 @@
       "cover": "",
       "summary": "A home for my reviews, stories and works in progress.",
       "body": "Built to be simple to keep up: write in edit mode, hit save, done.\n## What's next\n- Fill it with real work\n- Add a photo on the About page\n- Delete these samples",
-      "tags": ["Web"],
+      "tags": [
+        "Web"
+      ],
       "status": "In progress",
       "role": "Writer & editor",
-      "link": ""
+      "link": "",
+      "es": {
+        "title": "Este portafolio",
+        "summary": "Un hogar para mis reseñas, cuentos y trabajos en curso.",
+        "body": "Hecho para ser fácil de mantener: escribe en el modo edición, guarda y listo.\n## Lo que sigue\n- Llenarlo de trabajo real\n- Añadir una foto en la página «Sobre mí»\n- Borrar estos ejemplos"
+      }
     }
   ]
 }

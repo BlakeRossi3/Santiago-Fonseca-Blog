@@ -24,6 +24,16 @@ No framework, no database and no npm dependencies. It's plain HTML/CSS/JS plus f
 The edit code is checked on the server for every save and upload. Edit mode remembers it in that browser
 until you click **Lock**. Drafts are hidden from visitors.
 
+## English / Español
+
+The **EN / ES** switch in the header changes the language of the whole site. The choice is remembered per
+browser, and visitors whose browser is set to Spanish start in Spanish.
+- Menus, buttons, dates and comment messages are translated automatically.
+- Santiago's writing has an optional Spanish version: the editor has **English / Español** tabs for each post's
+  title, summary and text, and **Site settings → En español** covers the headline, intro, About page and section names.
+- In Spanish mode, anything without a Spanish version shows the English text, so nothing is ever missing.
+- The editor and settings screens themselves are in English.
+
 ## Comments
 
 Anyone can comment with just a name and no account. Comments show up right away.

@@ -9,6 +9,17 @@ export function safeUrl(v) {
   return /^(https?:\/\/|\/api\/media\?f=|mailto:)/i.test(s) ? s : '';
 }
 
+// Optional Spanish text; empty fields are dropped so the site falls back to English.
+function cleanEs(x, fields) {
+  if (!x || typeof x !== 'object') return undefined;
+  const out = {};
+  for (const [k, max] of fields) {
+    const v = str(x[k], max);
+    if (v.trim()) out[k] = k === 'body' ? v : v.trim();
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 function cleanEntry(e) {
   const type = e.type;
   const id = str(e.id, 40).replace(/[^\w-]/g, '');
@@ -26,6 +37,8 @@ function cleanEntry(e) {
     body: str(e.body, 300_000),
     tags: (Array.isArray(e.tags) ? e.tags : []).map(t => str(t, 40).trim()).filter(Boolean).slice(0, 12),
   };
+  const es = cleanEs(e.es, [['title', 200], ['summary', 600], ['body', 300_000]]);
+  if (es) out.es = es;
   if (type === 'review') {
     out.year = str(e.year, 10).trim();
     out.director = str(e.director, 120).trim();
@@ -48,6 +61,12 @@ export function cleanContent(input) {
     const x = (s.sections && s.sections[t]) || {};
     sections[t] = { title: str(x.title, 80).trim(), intro: str(x.intro, 600) };
   }
+  const sEs = s.es && typeof s.es === 'object' ? s.es : {};
+  const sectionsEs = {};
+  for (const t of TYPES) {
+    const x = (sEs.sections && sEs.sections[t]) || {};
+    sectionsEs[t] = { title: str(x.title, 80).trim(), intro: str(x.intro, 600) };
+  }
 
   const site = {
     name: str(s.name, 80).trim() || 'Santiago Fonseca',
@@ -62,6 +81,7 @@ export function cleanContent(input) {
       .filter(l => l.label && l.url),
     sections,
     comments: s.comments !== false,
+    es: { tagline: str(sEs.tagline, 200), intro: str(sEs.intro, 1000), about: str(sEs.about, 20_000), sections: sectionsEs },
   };
 
   const seen = new Set();
