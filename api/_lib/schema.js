@@ -50,7 +50,7 @@ export function cleanContent(input) {
   }
 
   const site = {
-    name: str(s.name, 80).trim() || 'My Portfolio',
+    name: str(s.name, 80).trim() || 'Santiago Fonseca',
     tagline: str(s.tagline, 200),
     intro: str(s.intro, 1000),
     about: str(s.about, 20_000),
@@ -61,6 +61,7 @@ export function cleanContent(input) {
       .map(l => ({ label: str(l && l.label, 60).trim(), url: safeUrl(l && l.url) }))
       .filter(l => l.label && l.url),
     sections,
+    comments: s.comments !== false,
   };
 
   const seen = new Set();

@@ -317,6 +317,28 @@ body.editing main.wrap { padding-bottom: 140px; }
 .entry-nav a:hover strong { color: var(--accent-ink); }
 @media (max-width: 640px) { .entry-nav strong { font-size: 21px; } }
 
+/* ---------- Comments ---------- */
+.comments { max-width: 680px; margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--line); }
+.comments h2 { display: flex; align-items: baseline; gap: 12px; font-size: 32px; }
+.comments h2 span { font: 500 14px/1 var(--font-ui); color: var(--text-faint); }
+.comment-list { margin: 22px 0 36px; }
+.comment { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.comment:first-child { padding-top: 4px; }
+.comment header { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 14px; }
+.comment strong { font-weight: 600; }
+.comment time { font-size: 13px; color: var(--text-faint); }
+.comment header .btn { margin-left: auto; padding: 6px 10px; }
+.comment-text { margin-top: 8px; font-size: 15.5px; line-height: 1.65; color: var(--text-body); overflow-wrap: anywhere; }
+.comment-text p { margin: 0 0 0.6em; }
+.comment-text p:last-child { margin-bottom: 0; }
+.comment.is-owner { padding-left: 16px; border-left: 2px solid var(--accent); }
+.comment-form { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-raised); }
+.comment-form .field { margin-bottom: 14px; }
+.comment-form .hint b { color: var(--text-dim); font-weight: 600; }
+.comment-form > .hint { margin-bottom: 14px; }
+.comment-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
 /* ---------- About ---------- */
 .about { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 64px; padding: 80px 0 0; }
 .about.no-photo { grid-template-columns: minmax(0, 1fr); max-width: 760px; }

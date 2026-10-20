@@ -1,12 +1,13 @@
 {
   "site": {
-    "name": "Your Name",
+    "name": "Santiago Fonseca",
     "tagline": "Notes on films, short fiction, and *other things I make*.",
     "intro": "A running record of what I'm watching, writing and building. Start anywhere.",
     "about": "This is the about page. Say who you are, what you make, and what you're working on next.\n\nYou can change all of this, and everything else on the site, from edit mode: click **Edit** at the bottom of any page and enter your code.",
     "photo": "",
     "email": "",
     "links": [],
+    "comments": true,
     "sections": {
       "review": { "title": "", "intro": "" },
       "story": { "title": "", "intro": "" },

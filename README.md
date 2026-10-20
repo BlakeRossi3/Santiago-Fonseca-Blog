@@ -1,10 +1,10 @@
-# Creative Portfolio
+# Santiago Fonseca
 
-A portfolio site for film reviews, short stories and projects. It has a dark theme with purple highlights.
-Visitors just read. The owner clicks **Edit** in the footer, enters the edit code, and can then write, edit,
+Santiago Fonseca's portfolio site for film reviews, short stories and projects. It has a dark theme with purple highlights.
+Visitors read and can leave comments. The owner clicks **Edit** in the footer, enters the edit code, and can then write, edit,
 upload images and change site settings right on the page.
 
-No framework, no database and no npm dependencies. It's plain HTML/CSS/JS plus four small Vercel functions.
+No framework, no database and no npm dependencies. It's plain HTML/CSS/JS plus five small Vercel functions.
 
 ## How it works
 
@@ -14,13 +14,26 @@ No framework, no database and no npm dependencies. It's plain HTML/CSS/JS plus f
   - `auth`: check the edit code
   - `upload`: save an image (needs the code)
   - `media`: serve an uploaded image
-- `content/site.json` holds all text, and `content/uploads/` holds the images.
+  - `comments`: list and post comments (deleting one needs the code)
+- `content/site.json` holds all text, `content/uploads/` holds the images, and `content/comments/<post id>.json`
+  holds each post's comments.
 - **On Vercel, every save is a commit to this GitHub repo** (made through the GitHub API). That gives you
   free storage with full history, and any old version can be restored from GitHub.
   `vercel.json` skips redeploys for commits that only touch `content/`, because the site reads content live.
 
 The edit code is checked on the server for every save and upload. Edit mode remembers it in that browser
 until you click **Lock**. Drafts are hidden from visitors.
+
+## Comments
+
+Anyone can comment with just a name and no account. Comments show up right away.
+- In edit mode, every comment has a **Delete** button. Comments Santiago posts while unlocked get an **Author** badge.
+- **Site settings → Let visitors comment on posts** turns commenting off everywhere.
+  Existing comments stay visible, but no new ones can be posted.
+- Spam guards: a hidden trap field that bots fill in, a check that the form was open for at least a few seconds
+  before posting, and a limit of 5 comments per visitor every 10 minutes.
+- Each comment is a commit in the repo, just like edits. Comment commits only touch `content/`, so they don't
+  trigger redeploys.
 
 ## Deploy on Vercel
 

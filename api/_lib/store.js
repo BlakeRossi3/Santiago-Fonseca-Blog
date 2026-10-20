@@ -8,6 +8,7 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const CONTENT_FILE = 'content/site.json';
 const UPLOAD_DIR = 'content/uploads';
+const COMMENT_DIR = 'content/comments';
 
 const token = () => process.env.GITHUB_TOKEN;
 const branch = () => process.env.GITHUB_BRANCH || 'main';
@@ -107,4 +108,59 @@ export async function readUpload(name) {
   } catch {
     return null;
   }
+}
+
+// ---------- Comments: one JSON file per entry ----------
+async function ghGetJson(file) {
+  const res = await gh(file);
+  if (res.status === 404) return { data: null };
+  if (!res.ok) throw new Error(`GitHub read failed (${res.status})`);
+  const meta = await res.json();
+  let text = meta.content ? Buffer.from(meta.content, 'base64').toString('utf8') : null;
+  if (text === null) text = await (await gh(file, { raw: true })).text(); // files over 1 MB come without content
+  return { data: JSON.parse(text), sha: meta.sha };
+}
+
+const commentFile = entryId => `${COMMENT_DIR}/${entryId}.json`;
+
+export async function readComments(entryId) {
+  if (usingGitHub()) {
+    const { data } = await ghGetJson(commentFile(entryId));
+    return Array.isArray(data) ? data : [];
+  }
+  try {
+    const data = JSON.parse(await fs.readFile(path.join(ROOT, commentFile(entryId)), 'utf8'));
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+// Read-modify-write that retries if two people comment at the same moment.
+export async function updateComments(entryId, change, message) {
+  const file = commentFile(entryId);
+  if (usingGitHub()) {
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { data, sha } = await ghGetJson(file);
+      const next = change(Array.isArray(data) ? data : []);
+      const res = await gh(file, {
+        method: 'PUT',
+        body: {
+          message,
+          content: Buffer.from(JSON.stringify(next, null, 2) + '\n').toString('base64'),
+          branch: branch(),
+          ...(sha ? { sha } : {}),
+        },
+      });
+      if (res.ok) return next;
+      if (res.status !== 409 && res.status !== 422) throw new Error(`GitHub save failed (${res.status})`);
+    }
+    throw Object.assign(new Error('Busy'), { status: 503 });
+  }
+  const next = change(await readComments(entryId));
+  const full = path.join(ROOT, file);
+  await fs.mkdir(path.dirname(full), { recursive: true });
+  await fs.writeFile(full + '.tmp', JSON.stringify(next, null, 2) + '\n');
+  await fs.rename(full + '.tmp', full);
+  return next;
 }

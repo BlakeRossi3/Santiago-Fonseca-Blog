@@ -15,7 +15,7 @@ const LABELS = {
   story: { title: 'Story title', summary: 'Teaser', body: 'Story', date: 'Written on', cover: 'Cover image (optional)' },
   project: { title: 'Project name', summary: 'One-line description', body: 'Write-up', date: 'Date', cover: 'Cover image' },
 };
-const DEFAULT_SITE = { name: 'Your Name', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
+const DEFAULT_SITE = { name: 'Santiago Fonseca', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
 const CODE_KEY = 'portfolio-edit-code';
 
 const state = { content: null, code: readCode(), editing: false, dirty: false, here: '' };
@@ -55,6 +55,7 @@ function normalize(c) {
     sections[t] = { title: x.title || '', intro: x.intro || '' };
   }
   s.sections = sections;
+  s.comments = s.comments !== false;
   const entries = (Array.isArray(c.entries) ? c.entries : [])
     .filter(e => e && TYPES[e.type])
     .map(e => ({ tags: [], published: true, featured: false, summary: '', body: '', cover: '', date: '', ...e }));
@@ -345,6 +346,7 @@ function entryView(type, slug) {
           ${lede}
           <div class="prose">${md(e.body)}</div>
           ${tagRow(e)}
+          ${commentsBlock(e)}
         </div>
       </div>
       ${entryNav(e)}
@@ -360,6 +362,7 @@ function entryView(type, slug) {
         ${e.cover ? `<div class="entry-cover">${media(e, { big: true })}</div>` : ''}
         <div class="prose story-prose">${md(e.body)}</div>
         ${tagRow(e)}
+        ${commentsBlock(e)}
         ${entryNav(e)}
       </div>
     </article>`;
@@ -376,10 +379,100 @@ function entryView(type, slug) {
       ${e.cover ? `<div class="entry-cover">${media(e, { big: true })}</div>` : ''}
       <div class="prose">${md(e.body)}</div>
       ${tagRow(e)}
+      ${commentsBlock(e)}
       ${entryNav(e)}
     </article>`;
   }
-  return { title: e.title, html, mount: () => wireDelete() };
+  return { title: e.title, html, mount: () => { wireDelete(); mountComments(e); } };
+}
+
+// ---------- Comments ----------
+const NAME_KEY = 'portfolio-commenter';
+function commentsBlock(e) {
+  const open = state.content.site.comments || state.editing;
+  let savedName = '';
+  try { savedName = localStorage.getItem(NAME_KEY) || ''; } catch {}
+  const form = open ? `<form class="comment-form" data-comment-form novalidate>
+      ${state.editing
+        ? `<p class="hint">Posting as <b>${esc(state.content.site.name)}</b> (author).</p>`
+        : `<label class="field"><span class="label">Name</span><input class="input" name="name" maxlength="60" autocomplete="name" value="${esc(savedName)}" required></label>`}
+      <label class="field"><span class="label">Comment</span><textarea class="input" name="text" rows="4" maxlength="2000" required></textarea></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="comment-actions">
+        <span class="hint">${state.editing ? '' : 'Be kind. Comments show up right away.'}</span>
+        <button class="btn btn-primary btn-sm" type="submit">Post comment</button>
+      </div>
+    </form>` : '<p class="hint">Comments are closed.</p>';
+  return `<section class="comments" id="comments" data-comments="${esc(e.id)}">
+    <h2>Comments <span data-comment-count></span></h2>
+    <div class="comment-list" data-comment-list><p class="hint">Loading comments…</p></div>
+    ${form}
+  </section>`;
+}
+
+function commentHtml(c) {
+  const del = state.editing ? `<button class="btn btn-ghost btn-sm" type="button" data-delete-comment="${esc(c.id)}">Delete</button>` : '';
+  const when = new Date(c.date);
+  const date = isNaN(when) ? '' : when.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return `<article class="comment${c.owner ? ' is-owner' : ''}" data-comment="${esc(c.id)}">
+    <header><strong>${esc(c.name)}</strong>${c.owner ? '<span class="badge">Author</span>' : ''}<time datetime="${esc(c.date)}">${date}</time>${del}</header>
+    <div class="comment-text">${String(c.text).split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join('')}</div>
+  </article>`;
+}
+
+async function mountComments(e) {
+  const box = $(`[data-comments="${CSS.escape(e.id)}"]`);
+  if (!box) return;
+  const list = $('[data-comment-list]', box);
+  const count = $('[data-comment-count]', box);
+  const form = $('[data-comment-form]', box);
+  let token = '';
+  let comments = [];
+  const draw = () => {
+    count.textContent = comments.length ? String(comments.length) : '';
+    list.innerHTML = comments.length ? comments.map(commentHtml).join('') : '<p class="hint">No comments yet. Start the conversation.</p>';
+  };
+
+  try {
+    const res = await api(`/api/comments?entry=${encodeURIComponent(e.id)}${state.editing ? '&fresh=1' : ''}`);
+    if (!box.isConnected) return;
+    comments = res.comments;
+    token = res.token;
+    draw();
+  } catch {
+    if (box.isConnected) list.innerHTML = '<p class="hint">Comments couldn\'t load.</p>';
+  }
+
+  list.addEventListener('click', async ev => {
+    const btn = ev.target.closest('[data-delete-comment]');
+    if (!btn || !confirm('Delete this comment?')) return;
+    btn.disabled = true;
+    try {
+      await api(`/api/comments?entry=${encodeURIComponent(e.id)}&comment=${encodeURIComponent(btn.dataset.deleteComment)}`, { method: 'DELETE' });
+      comments = comments.filter(c => c.id !== btn.dataset.deleteComment);
+      draw();
+      toast('Comment deleted');
+    } catch (err) { toast(err.message, true); btn.disabled = false; }
+  });
+
+  if (!form) return;
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const f = form.elements;
+    const name = f.name ? f.name.value.trim() : '';
+    const text = f.text.value.trim();
+    if ((f.name && !name) || !text) { toast('Add your name and a comment.', true); return; }
+    const btn = $('[type=submit]', form);
+    btn.disabled = true;
+    try {
+      const res = await api('/api/comments', { method: 'POST', body: { entry: e.id, name, text, token, website: f.website.value } });
+      if (res.comment) { comments.push(res.comment); draw(); }
+      f.text.value = '';
+      if (name) { try { localStorage.setItem(NAME_KEY, name); } catch {} }
+      toast('Comment posted');
+    } catch (err) { toast(err.message, true); }
+    btn.disabled = false;
+  });
 }
 
 function aboutView() {
@@ -781,6 +874,7 @@ function settingsView() {
           <label class="field"><span class="label">Headline</span><input class="input" name="tagline" value="${esc(s.tagline)}" maxlength="200">
             <span class="hint">Wrap words in *asterisks* to highlight them.</span></label>
           <label class="field"><span class="label">Intro</span><textarea class="input" name="intro" rows="3" maxlength="1000">${esc(s.intro)}</textarea></label>
+          <label class="check field"><input type="checkbox" name="comments" ${s.comments ? 'checked' : ''}> Let visitors comment on posts</label>
         </div>
         <div class="panel">
           <p class="panel-title">About page</p>
@@ -838,7 +932,8 @@ function mountSettings() {
 
   const save = async () => {
     const site = {
-      name: f.name.value.trim() || 'Your Name',
+      name: f.name.value.trim() || 'Santiago Fonseca',
+      comments: f.comments.checked,
       tagline: f.tagline.value.trim(),
       intro: f.intro.value.trim(),
       about: f.about.value.replace(/\s+$/, ''),

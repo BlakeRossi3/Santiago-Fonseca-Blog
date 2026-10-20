@@ -1,7 +1,7 @@
 // GET  /api/content          public content (drafts removed), briefly cached at the edge
 // GET  /api/content?draft=1  everything, for edit mode (needs the edit code)
 // PUT  /api/content          replace all content (needs the edit code)
-import { send, query, readJson, codeOk, requestCode, methodNotAllowed } from './_lib/http.js';
+import { send, query, readJson, codeOk, requestCode, methodNotAllowed, edgeCache } from './_lib/http.js';
 import { readContent, writeContent, storageProblem } from './_lib/store.js';
 import { cleanContent } from './_lib/schema.js';
 
@@ -13,9 +13,7 @@ export default async function handler(req, res) {
         return send(res, 200, content, { 'Cache-Control': 'private, no-store' });
       }
       content.entries = content.entries.filter(e => e.published);
-      return send(res, 200, content, {
-        'Cache-Control': 'public, max-age=0, s-maxage=5, stale-while-revalidate=300',
-      });
+      return send(res, 200, content, edgeCache(5, 60));
     }
 
     if (req.method === 'PUT') {

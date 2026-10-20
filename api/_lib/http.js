@@ -47,6 +47,15 @@ export function requestCode(req) {
   try { return decodeURIComponent(raw); } catch { return ''; }
 }
 
+// Browsers always re-check; only Vercel's edge keeps a short-lived copy (so a burst of
+// visitors costs one GitHub read every few seconds, and nobody sees a stale page on reload).
+export function edgeCache(seconds, staleSeconds = 0) {
+  return {
+    'Cache-Control': 'public, no-cache',
+    'Vercel-CDN-Cache-Control': `max-age=${seconds}${staleSeconds ? `, stale-while-revalidate=${staleSeconds}` : ''}`,
+  };
+}
+
 export function methodNotAllowed(res, allowed) {
   send(res, 405, { error: 'Method not allowed' }, { Allow: allowed });
 }
