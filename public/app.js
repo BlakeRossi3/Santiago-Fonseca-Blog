@@ -15,11 +15,11 @@ const LABELS = {
   story: { title: 'Story title', summary: 'Teaser', body: 'Story', date: 'Written on', cover: 'Cover image (optional)' },
   project: { title: 'Project name', summary: 'One-line description', body: 'Write-up', date: 'Date', cover: 'Cover image' },
 };
-const DEFAULT_SITE = { name: 'Santiago Fonseca', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
+const DEFAULT_SITE = { name: '', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
 const CODE_KEY = 'portfolio-edit-code';
 const LANG_KEY = 'portfolio-lang';
 
-// Words visitors see, in both languages. Santiago's own writing has optional Spanish versions
+// Words visitors see, in both languages. The owner's own writing has optional Spanish versions
 // (entry.es, site.es); anything without one falls back to English.
 const STR = {
   en: {
@@ -39,7 +39,7 @@ const STR = {
     notFound: 'Not found', notFoundTitle: 'Lost the plot.', notFoundText: "That page doesn't exist (or has moved).", goHome: 'Go home',
     editMode: 'Edit mode', unlockPrompt: 'Unlock with the edit code to continue.', unlock: 'Unlock',
     comments: 'Comments', name: 'Name', comment: 'Comment', beKind: 'Be kind. Comments show up right away.',
-    post: 'Post comment', postingAs: 'Posting as <b>{x}</b> (author).', author: 'Author',
+    post: 'Post comment', postingAs: 'Posting as the <b>author</b>.', author: 'Author', siteTitle: 'Portfolio',
     noComments: 'No comments yet. Start the conversation.', loadingComments: 'Loading comments…',
     commentsClosed: 'Comments are closed.', commentsFailed: "Comments couldn't load.", commentPosted: 'Comment posted',
     commentNeedText: 'Add your name and a comment.', delete: 'Delete', deleteCommentQ: 'Delete this comment?', commentDeleted: 'Comment deleted',
@@ -65,7 +65,7 @@ const STR = {
     notFound: 'No encontrado', notFoundTitle: 'Se perdió la trama.', notFoundText: 'Esa página no existe (o se ha movido).', goHome: 'Volver al inicio',
     editMode: 'Modo edición', unlockPrompt: 'Desbloquea con el código de edición para continuar.', unlock: 'Desbloquear',
     comments: 'Comentarios', name: 'Nombre', comment: 'Comentario', beKind: 'Sé amable. Los comentarios aparecen al instante.',
-    post: 'Publicar comentario', postingAs: 'Publicando como <b>{x}</b> (autor).', author: 'Autor',
+    post: 'Publicar comentario', postingAs: 'Publicando como <b>autor</b>.', author: 'Autor', siteTitle: 'Portafolio',
     noComments: 'Aún no hay comentarios. Empieza la conversación.', loadingComments: 'Cargando comentarios…',
     commentsClosed: 'Los comentarios están cerrados.', commentsFailed: 'No se pudieron cargar los comentarios.', commentPosted: 'Comentario publicado',
     commentNeedText: 'Escribe tu nombre y un comentario.', delete: 'Eliminar', deleteCommentQ: '¿Eliminar este comentario?', commentDeleted: 'Comentario eliminado',
@@ -170,6 +170,7 @@ async function commit(mutate, okMessage) {
 const siteSections = () => (state.lang === 'es' ? state.content.site.es.sections : state.content.site.sections);
 const sectionTitle = t => siteSections()[t].title || tr(`sec.${t}`);
 const sectionIntro = t => siteSections()[t].intro || tr(`intro.${t}`);
+const siteTitle = () => state.content.site.name || tr('siteTitle');
 const siteText = k => (state.lang === 'es' && state.content.site.es[k]) || state.content.site[k];
 const typeLabel = t => tr(`type.${t}`);
 const statusLabel = s => tr(`status.${s}`);
@@ -343,7 +344,7 @@ function homeView() {
     title: '',
     html: `<div class="view">
       <section class="hero">
-        <h1 class="hero-title">${inlineText(siteText('tagline') || s.name)}</h1>
+        <h1 class="hero-title">${inlineText(siteText('tagline') || siteTitle())}</h1>
         ${siteText('intro') ? `<p class="hero-intro">${inlineText(siteText('intro'))}</p>` : ''}
         ${stats ? `<div class="hero-stats">${stats}</div>` : ''}
       </section>
@@ -483,7 +484,7 @@ function commentsBlock(e) {
   try { savedName = localStorage.getItem(NAME_KEY) || ''; } catch {}
   const form = open ? `<form class="comment-form" data-comment-form novalidate>
       ${state.editing
-        ? `<p class="hint">${tr('postingAs', { x: esc(state.content.site.name) })}</p>`
+        ? `<p class="hint">${tr('postingAs')}</p>`
         : `<label class="field"><span class="label">${tr('name')}</span><input class="input" name="name" maxlength="60" autocomplete="name" value="${esc(savedName)}" required></label>`}
       <label class="field"><span class="label">${tr('comment')}</span><textarea class="input" name="text" rows="4" maxlength="2000" required></textarea></label>
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -504,7 +505,7 @@ function commentHtml(c) {
   const when = new Date(c.date);
   const date = isNaN(when) ? '' : when.toLocaleDateString(locale(), { month: 'short', day: 'numeric', year: 'numeric' });
   return `<article class="comment${c.owner ? ' is-owner' : ''}" data-comment="${esc(c.id)}">
-    <header><strong>${esc(c.name)}</strong>${c.owner ? `<span class="badge">${tr('author')}</span>` : ''}<time datetime="${esc(c.date)}">${date}</time>${del}</header>
+    <header>${c.owner ? `<span class="badge">${tr('author')}</span>` : `<strong>${esc(c.name)}</strong>`}<time datetime="${esc(c.date)}">${date}</time>${del}</header>
     <div class="comment-text">${String(c.text).split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join('')}</div>
   </article>`;
 }
@@ -573,10 +574,9 @@ function aboutView() {
   return {
     title: tr('nav.about'),
     html: `<div class="about view ${s.photo ? '' : 'no-photo'}">
-      ${s.photo ? `<div class="about-photo"><img src="${esc(s.photo)}" alt="${esc(s.name)}"></div>` : ''}
+      ${s.photo ? `<div class="about-photo"><img src="${esc(s.photo)}" alt=""></div>` : ''}
       <div>
-        <p class="eyebrow">${tr('nav.about')}</p>
-        <h1 style="margin-top:16px">${esc(s.name)}</h1>
+        <h1>${tr('nav.about')}</h1>
         <div class="prose">${md(siteText('about')) || `<p>${tr('nothingYet')}</p>`}</div>
         ${links.length ? `<div class="about-links">${links.map(l => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${esc(l.label)}<span>${esc(l.show)}</span></a>`).join('')}</div>` : ''}
       </div>
@@ -995,7 +995,8 @@ function settingsView() {
       <div class="settings-grid">
         <div class="panel">
           <p class="panel-title">Home page</p>
-          <label class="field"><span class="label">Your name</span><input class="input" name="name" value="${esc(s.name)}" maxlength="80"></label>
+          <label class="field"><span class="label">Site title (optional)</span><input class="input" name="name" value="${esc(s.name)}" placeholder="Portfolio" maxlength="80">
+            <span class="hint">Shown in the header and browser tab. Leave blank for "Portfolio" / "Portafolio".</span></label>
           <label class="field"><span class="label">Headline</span><input class="input" name="tagline" value="${esc(s.tagline)}" maxlength="200">
             <span class="hint">Wrap words in *asterisks* to highlight them.</span></label>
           <label class="field"><span class="label">Intro</span><textarea class="input" name="intro" rows="3" maxlength="1000">${esc(s.intro)}</textarea></label>
@@ -1073,7 +1074,7 @@ function mountSettings() {
 
   const save = async () => {
     const site = {
-      name: f.name.value.trim() || 'Santiago Fonseca',
+      name: f.name.value.trim(),
       comments: f.comments.checked,
       tagline: f.tagline.value.trim(),
       intro: f.intro.value.trim(),
@@ -1186,7 +1187,7 @@ function render() {
   };
   const v = (views[r.view] || notFoundView)();
   $('#main').innerHTML = v.html;
-  const name = state.content.site.name;
+  const name = siteTitle();
   document.title = v.title ? `${v.title} — ${name}` : name;
   if (v.mount) v.mount();
 }
@@ -1194,7 +1195,7 @@ function render() {
 function renderChrome(r) {
   const s = state.content.site;
   document.body.classList.toggle('editing', state.editing);
-  $('[data-brand]').textContent = s.name;
+  $('[data-brand]').textContent = siteTitle();
   const current = r.view === 'about' ? 'about' : r.type ? TYPES[r.type].path : '';
   document.documentElement.lang = state.lang;
   $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
@@ -1202,7 +1203,7 @@ function renderChrome(r) {
   $('[data-lang-switch]').setAttribute('aria-label', tr('language'));
   $('[data-nav]').innerHTML = [...ORDER.map(t => [TYPES[t].path, tr(`nav.${t}`)]), ['about', tr('nav.about')]]
     .map(([p, label]) => `<a href="/${p}"${p === current && r.view !== 'editor' ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  $('[data-copy]').textContent = `© ${new Date().getFullYear()} ${s.name}`;
+  $('[data-copy]').textContent = `© ${new Date().getFullYear()} ${siteTitle()}`;
   $('[data-footer-links]').innerHTML = s.links.filter(l => safeHref(l.url))
     .map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');
   $('[data-editbar]').hidden = !state.editing;

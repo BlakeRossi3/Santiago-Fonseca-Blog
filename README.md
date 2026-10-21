@@ -1,6 +1,6 @@
-# Santiago Fonseca
+# Creative Portfolio
 
-Santiago Fonseca's portfolio site for film reviews, short stories and projects. It has a dark theme with purple highlights.
+A portfolio site for film reviews, short stories and projects. It has a dark theme with purple highlights.
 Visitors read and can leave comments. The owner clicks **Edit** in the footer, enters the edit code, and can then write, edit,
 upload images and change site settings right on the page.
 
@@ -29,7 +29,7 @@ until you click **Lock**. Drafts are hidden from visitors.
 The **EN / ES** switch in the header changes the language of the whole site. The choice is remembered per
 browser, and visitors whose browser is set to Spanish start in Spanish.
 - Menus, buttons, dates and comment messages are translated automatically.
-- Santiago's writing has an optional Spanish version: the editor has **English / Español** tabs for each post's
+- The owner's writing has an optional Spanish version: the editor has **English / Español** tabs for each post's
   title, summary and text, and **Site settings → En español** covers the headline, intro, About page and section names.
 - In Spanish mode, anything without a Spanish version shows the English text, so nothing is ever missing.
 - The editor and settings screens themselves are in English.
@@ -37,7 +37,7 @@ browser, and visitors whose browser is set to Spanish start in Spanish.
 ## Comments
 
 Anyone can comment with just a name and no account. Comments show up right away.
-- In edit mode, every comment has a **Delete** button. Comments Santiago posts while unlocked get an **Author** badge.
+- In edit mode, every comment has a **Delete** button. Comments posted while unlocked show up as **Author** (no name).
 - **Site settings → Let visitors comment on posts** turns commenting off everywhere.
   Existing comments stay visible, but no new ones can be posted.
 - Spam guards: a hidden trap field that bots fill in, a check that the form was open for at least a few seconds

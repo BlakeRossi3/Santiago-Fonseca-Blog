@@ -58,7 +58,7 @@ const clean = (v, max) => String(v ?? '')
   .replace(/\n{3,}/g, '\n\n')
   .trim()
   .slice(0, max);
-const publicComment = c => ({ id: c.id, name: c.name, text: c.text, date: c.date, owner: c.owner === true });
+const publicComment = c => ({ id: c.id, name: c.owner === true ? '' : c.name, text: c.text, date: c.date, owner: c.owner === true });
 
 export default async function handler(req, res) {
   const q = query(req);
@@ -92,9 +92,9 @@ export default async function handler(req, res) {
       const entry = content.entries.find(e => e.id === entryId && (e.published || owner));
       if (!entry) return send(res, 404, { error: m.unknown });
 
-      const name = owner ? content.site.name : clean(body.name, 60);
+      const name = owner ? '' : clean(body.name, 60);
       const text = clean(body.text, 2000);
-      if (!name || !text) return send(res, 400, { error: m.empty });
+      if ((!owner && !name) || !text) return send(res, 400, { error: m.empty });
 
       const comment = {
         id: crypto.randomBytes(6).toString('hex'),

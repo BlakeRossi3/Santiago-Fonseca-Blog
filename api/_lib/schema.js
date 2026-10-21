@@ -69,7 +69,7 @@ export function cleanContent(input) {
   }
 
   const site = {
-    name: str(s.name, 80).trim() || 'Santiago Fonseca',
+    name: str(s.name, 80).trim(),
     tagline: str(s.tagline, 200),
     intro: str(s.intro, 1000),
     about: str(s.about, 20_000),
