@@ -87,30 +87,6 @@
       "rating": 4.5
     },
     {
-      "id": "sample-review-2",
-      "type": "review",
-      "title": "Past Lives",
-      "slug": "past-lives",
-      "date": "2026-09-08",
-      "published": true,
-      "featured": false,
-      "cover": "",
-      "summary": "Quiet, precise, and devastating in the way only restraint can be.",
-      "body": "Nothing much happens and everything does. Celine Song trusts silence more than most first-time directors would dare, and it pays off in a final walk to a taxi that lasts about a minute and feels like twenty-four years.\n(Sample review — swap it for your own.)",
-      "tags": [
-        "Drama",
-        "Romance"
-      ],
-      "es": {
-        "title": "Vidas pasadas",
-        "summary": "Tranquila, precisa y devastadora como solo puede serlo la contención.",
-        "body": "No pasa casi nada y pasa todo. Celine Song confía en el silencio más de lo que se atrevería la mayoría de los directores debutantes, y le sale bien en un último paseo hasta un taxi que dura un minuto y se siente como veinticuatro años.\n(Reseña de ejemplo: cámbiala por una tuya.)"
-      },
-      "year": "2023",
-      "director": "Celine Song",
-      "rating": 4
-    },
-    {
       "id": "sample-news",
       "type": "news",
       "title": "Welcome to the new site",
