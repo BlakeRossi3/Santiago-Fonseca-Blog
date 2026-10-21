@@ -64,29 +64,6 @@
       }
     },
     {
-      "id": "sample-review-1",
-      "type": "review",
-      "title": "Paris, Texas",
-      "slug": "paris-texas",
-      "date": "2026-09-21",
-      "published": true,
-      "featured": false,
-      "cover": "",
-      "summary": "A film about the distance between people, measured in miles and then in feet and then in nothing at all.",
-      "body": "Wenders shoots the American Southwest like it's the surface of a planet nobody has bothered to name. Travis walks out of it at the start and spends the rest of the film trying to walk back into his own life.\nThe peep-show scene is the whole movie in miniature: two people who can't look at each other, talking through glass, finally saying the true thing because they can't see the other person's face.\nRy Cooder's slide guitar does half the acting. Harry Dean Stanton does the other half without seeming to try.\n(Sample review — swap it for your own.)",
-      "tags": [
-        "Drama",
-        "Road movie"
-      ],
-      "es": {
-        "summary": "Una película sobre la distancia entre las personas, medida en millas, luego en pasos y al final en nada.",
-        "body": "Wenders filma el suroeste americano como si fuera la superficie de un planeta al que nadie se ha molestado en ponerle nombre. Travis sale caminando de él al principio y pasa el resto de la película intentando volver a entrar en su propia vida.\nLa escena del peep show es toda la película en miniatura: dos personas que no pueden mirarse, hablando a través de un cristal, diciendo por fin la verdad porque no pueden verse la cara.\nLa guitarra slide de Ry Cooder hace la mitad de la actuación. Harry Dean Stanton hace la otra mitad sin que parezca que lo intenta.\n(Reseña de ejemplo: cámbiala por una tuya.)"
-      },
-      "year": "1984",
-      "director": "Wim Wenders",
-      "rating": 4.5
-    },
-    {
       "id": "sample-news",
       "type": "news",
       "title": "Welcome to the new site",
