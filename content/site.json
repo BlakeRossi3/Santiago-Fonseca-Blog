@@ -50,7 +50,7 @@
       "slug": "the-projectionist",
       "date": "2026-10-02",
       "published": true,
-      "featured": true,
+      "featured": false,
       "cover": "",
       "summary": "Every night for thirty years, Mara ran the last reel for an empty room. Tonight, someone stayed.",
       "body": "Every night for thirty years, Mara ran the last reel for an empty room.\nThe late show at the Orpheum had never been popular. By the time the credits rolled the ushers were gone, the popcorn machine had gone quiet, and the only sound in the building was the projector ticking behind her like a second heart.\nShe didn't mind. She liked the films better when no one was watching them. They seemed to relax.\n* * *\nThe man in row F arrived halfway through. She saw him through the little square window: a dark shape against the silver light, hat still on, not moving.\nWhen the reel ended she waited for him to leave. He didn't.\n\"We're closed,\" she said from the aisle.\n\"I know,\" he said. \"I was waiting for the part they cut.\"\nMara looked at him for a long moment. Then she went back up the stairs, opened the cabinet she hadn't opened since 1994, and threaded the last reel by hand.\n(This is a sample story. Replace it with your own from edit mode.)",
@@ -128,6 +128,29 @@
         "title": "Bienvenidos al nuevo sitio",
         "body": "Aquí vivirán a partir de ahora las reseñas, los cuentos y alguna que otra noticia.\nHabrá una reseña nueva casi cada semana y un cuento cada vez que haya uno listo. Los comentarios están abiertos en todo, así que pasa a saludar.\n## Lo que viene\n- Algunos cuentos antiguos, revisados y publicados aquí\n- Reseñas de la temporada de festivales de este año\n(Esta es una entrada de ejemplo. Sustitúyela por una tuya desde el modo edición.)"
       }
+    },
+    {
+      "id": "mvhe74ecq5x4n",
+      "type": "review",
+      "title": "12 Angry Men",
+      "slug": "12-angry-men",
+      "date": "2026-09-02",
+      "published": true,
+      "featured": true,
+      "cover": "/api/media?f=mvhea8on-5ba4be0b.jpg",
+      "summary": "The jury in a New York City murder trial is frustrated by a single member whose skeptical caution forces them to more carefully consider the evidence before jumping to a hasty verdict.",
+      "body": "I watched 12 Angry Men with my dad not long ago, and it left a lasting impact on me.\nAt the beginning of the film, I stood firmly with the majority. I believed the young man was guilty and understood exactly why the other jurors felt the same way. All the evidence seemed to point in one direction. But as the story unfolded, I began to grasp the weight of what was truly at stake: a human life. One decision could destroy it forever.\nPiece by piece, the arguments that had felt so solid were examined, challenged, and taken apart. What once looked like an open-and-shut case started to lose its force. By the end, the boy’s life was spared—not because someone had proven his innocence beyond all doubt, but because reasonable doubt had been allowed to exist.\nI won’t pretend I trusted him from the start. I didn’t. Every piece of information pointed toward guilt. What moved me was watching one man refuse to accept that certainty so easily. He didn’t stand against the idea that the boy might be guilty; he stood against the idea that we should treat guilt as inevitable. That single stance shifted something in how I think about justice.\nWe shouldn’t begin by labeling a person “guilty” or “innocent.” We should begin by seeing them as a human being—someone who deserves the full weight of doubt and the full presentation of facts before any irreversible judgment is made. If the evidence leaves no room for doubt, then the consequences must follow. But if even the smallest reasonable doubt remains, no one’s life should be destroyed.\n12 Angry Men is a remarkable piece of cinema. I hope more films like it appear in the future—stories that remind us, in the real world, what justice is supposed to mean.",
+      "tags": [
+        "Drama"
+      ],
+      "es": {
+        "title": "12 Hombres en pugna",
+        "summary": "El jurado de un juicio por asesinato en la ciudad de Nueva York se ve frustrado por un solo miembro cuya cautela escéptica los obliga a considerar la evidencia con más cuidado antes de precipitarse a un veredicto apresurado.",
+        "body": "Hace poco vi 12 hombres en pugna con mi papá, y me dejó una huella profunda.\nAl principio de la película, yo estaba firmemente del lado de la mayoría. Creía que el joven era culpable y entendía perfectamente por qué los demás jurados pensaban lo mismo. Toda la evidencia parecía apuntar en una sola dirección. Pero conforme avanzaba la historia, empecé a comprender el verdadero peso de lo que estaba en juego: una vida humana. Una sola decisión podía destruirla para siempre.\nPoco a poco, los argumentos que al inicio parecían sólidos fueron examinados, cuestionados y desmontados. Lo que había parecido un caso cerrado comenzó a perder fuerza. Al final, la vida del muchacho se salvó… no porque alguien hubiera demostrado su inocencia más allá de toda duda, sino porque se permitió que existiera la duda razonable.\nNo voy a pretender que confié en él desde el principio. No lo hice. Toda la información apuntaba hacia la culpabilidad. Lo que me conmovió fue ver a un hombre negarse a aceptar esa certeza con tanta facilidad. Él no se oponía a la idea de que el muchacho pudiera ser culpable; se oponía a la idea de que debiéramos tratar la culpabilidad como algo inevitable. Esa postura cambió algo en mi forma de entender la justicia.\nNo deberíamos empezar etiquetando a una persona como “culpable” o “inocente”. Deberíamos empezar viéndola como un ser humano: alguien que merece el peso completo de la duda y la presentación completa de los hechos antes de que se emita un juicio irreversible. Si la evidencia no deja espacio para la duda, entonces las consecuencias deben seguir. Pero si permanece aunque sea la más mínima duda razonable, ninguna vida debería ser destruida.\n12 hombres en pugna es una obra de cine extraordinaria. Ojalá en el futuro aparezcan más películas como esta: historias que nos recuerden, en el mundo real, qué es lo que realmente debería significar la justicia."
+      },
+      "year": "1957",
+      "director": "Sidney Lumet",
+      "rating": 4
     }
   ]
 }
