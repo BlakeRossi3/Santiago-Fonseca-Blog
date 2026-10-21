@@ -121,6 +121,7 @@ export default async function handler(req, res) {
     return methodNotAllowed(res, 'GET, POST, DELETE');
   } catch (err) {
     console.error(err);
+    if (err.expose && codeOk(requestCode(req))) return send(res, err.status, { error: err.message });
     return send(res, err.status || 500, { error: err.status === 503 ? m.busy : m.failed });
   }
 }

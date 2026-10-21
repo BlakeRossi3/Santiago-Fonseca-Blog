@@ -1275,7 +1275,7 @@ function toast(msg, isError = false) {
   el.classList.toggle('error', isError);
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), isError ? 5000 : 2200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), isError ? Math.max(5000, msg.length * 70) : 2200);
 }
 
 // ---------- Boot ----------
@@ -1284,8 +1284,9 @@ function toast(msg, isError = false) {
   $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
   if (state.code) {
     try {
-      await api('/api/auth', { method: 'POST', body: { code: state.code } });
+      const res = await api('/api/auth', { method: 'POST', body: { code: state.code } });
       state.editing = true;
+      if (res && res.warning) setTimeout(() => toast(res.warning, true), 600);
     } catch (err) {
       if (err.status === 401 || err.status === 503) { forgetCode(); state.code = null; }
     }

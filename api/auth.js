@@ -1,7 +1,7 @@
 // POST /api/auth { code } → 200 if it's the edit code. Nothing is stored server-side;
 // the browser keeps the code and sends it with every save, where it's checked again.
 import { send, readJson, codeOk, editingEnabled, methodNotAllowed } from './_lib/http.js';
-import { storageProblem } from './_lib/store.js';
+import { checkStorage } from './_lib/store.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return methodNotAllowed(res, 'POST');
@@ -11,5 +11,6 @@ export default async function handler(req, res) {
   let body;
   try { body = await readJson(req, 10_000); } catch { body = null; }
   if (!codeOk(body && body.code)) return send(res, 401, { error: "That code didn't work." });
-  return send(res, 200, { ok: true, warning: storageProblem() }, { 'Cache-Control': 'no-store' });
+  const warning = await checkStorage().catch(() => null);
+  return send(res, 200, { ok: true, warning }, { 'Cache-Control': 'no-store' });
 }

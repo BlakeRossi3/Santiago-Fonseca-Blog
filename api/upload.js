@@ -22,6 +22,6 @@ export default async function handler(req, res) {
     return send(res, 200, { url: `/api/media?f=${name}` });
   } catch (err) {
     console.error(err);
-    return send(res, err.status || 500, { error: 'Upload failed.' });
+    return send(res, err.status || 500, { error: err.expose ? err.message : 'Upload failed.' });
   }
 }

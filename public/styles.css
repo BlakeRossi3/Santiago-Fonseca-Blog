@@ -532,7 +532,7 @@ dialog.modal .form-error { margin: 0 0 8px; }
   opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-.toast.error { border-color: var(--danger); color: var(--danger); }
+.toast.error { border-color: var(--danger); color: var(--danger); border-radius: 12px; width: max-content; max-width: min(560px, calc(100vw - 32px)); line-height: 1.5; }
 
 .notfound { padding: 120px 0; text-align: center; }
 .notfound h1 { font-size: 64px; }

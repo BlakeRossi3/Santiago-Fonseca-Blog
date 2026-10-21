@@ -30,25 +30,53 @@ export function storageProblem() {
   return null;
 }
 
+const ghHeaders = (raw = false) => ({
+  Authorization: `Bearer ${token()}`,
+  Accept: raw ? 'application/vnd.github.raw' : 'application/vnd.github+json',
+  'X-GitHub-Api-Version': '2022-11-28',
+  'User-Agent': 'creative-portfolio',
+});
+
 async function gh(file, { method = 'GET', body, raw = false } = {}) {
   const ref = method === 'GET' ? `?ref=${encodeURIComponent(branch())}` : '';
   return fetch(`https://api.github.com/repos/${repo()}/contents/${file}${ref}`, {
     method,
-    headers: {
-      Authorization: `Bearer ${token()}`,
-      Accept: raw ? 'application/vnd.github.raw' : 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'creative-portfolio',
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-    },
+    headers: { ...ghHeaders(raw), ...(body ? { 'Content-Type': 'application/json' } : {}) },
     body: body ? JSON.stringify(body) : undefined,
   });
+}
+
+// A GitHub failure explained in plain words. `expose` lets the API show it to the
+// signed-in editor (never to visitors), so a bad token setup is obvious instead of
+// "something went wrong".
+function ghError(res, action) {
+  let message;
+  if (res.status === 401) {
+    message = 'GitHub rejected the token: GITHUB_TOKEN in Vercel is wrong or has expired. Make a new token, update it in Vercel and redeploy.';
+  } else if (res.status === 403 && res.headers.get('x-ratelimit-remaining') === '0') {
+    message = 'GitHub is rate-limiting the site for a moment. Try again in a minute.';
+  } else if (res.status === 403) {
+    message = `The GitHub token isn't allowed to ${action === 'save' ? 'save to' : 'read'} ${repo()}. On GitHub, edit the token and set Repository permissions → Contents to "Read and write".`;
+  } else if (res.status === 404) {
+    message = `GitHub can't find ${repo()} (branch "${branch()}") with this token. On GitHub, edit the token and add this repository under "Repository access".`;
+  } else {
+    message = `GitHub ${action} failed (error ${res.status}). Try again in a minute.`;
+  }
+  console.error(`GitHub ${action} ${res.status}: ${message}`);
+  return Object.assign(new Error(message), { status: 502, expose: true });
+}
+
+// Run when edit mode is unlocked: can the token see the repo at all?
+export async function checkStorage() {
+  if (!usingGitHub()) return storageProblem();
+  const res = await fetch(`https://api.github.com/repos/${repo()}`, { headers: ghHeaders() });
+  return res.ok ? null : ghError(res, 'read').message;
 }
 
 async function ghSha(file) {
   const res = await gh(file);
   if (res.status === 404) return undefined;
-  if (!res.ok) throw new Error(`GitHub read failed (${res.status})`);
+  if (!res.ok) throw ghError(res, 'read');
   return (await res.json()).sha;
 }
 
@@ -62,8 +90,7 @@ async function ghPut(file, buffer, message, { isNew = false } = {}) {
     if (res.ok) return;
     // 409/422 = the file changed underneath us; fetch the new sha and try once more.
     if ((res.status === 409 || res.status === 422) && attempt === 0) { isNew = false; continue; }
-    const detail = await res.text().catch(() => '');
-    throw new Error(`GitHub save failed (${res.status}) ${detail.slice(0, 200)}`);
+    throw ghError(res, 'save');
   }
 }
 
@@ -75,7 +102,7 @@ export async function readContent() {
   if (usingGitHub()) {
     const res = await gh(CONTENT_FILE, { raw: true });
     if (res.ok) return JSON.parse(await res.text());
-    if (res.status !== 404) throw new Error(`GitHub read failed (${res.status})`);
+    if (res.status !== 404) throw ghError(res, 'read');
   }
   return bundledContent();
 }
@@ -100,7 +127,7 @@ export async function readUpload(name) {
   if (usingGitHub()) {
     const res = await gh(`${UPLOAD_DIR}/${name}`, { raw: true });
     if (res.status === 404) return null;
-    if (!res.ok) throw new Error(`GitHub read failed (${res.status})`);
+    if (!res.ok) throw ghError(res, 'read');
     return Buffer.from(await res.arrayBuffer());
   }
   try {
@@ -114,7 +141,7 @@ export async function readUpload(name) {
 async function ghGetJson(file) {
   const res = await gh(file);
   if (res.status === 404) return { data: null };
-  if (!res.ok) throw new Error(`GitHub read failed (${res.status})`);
+  if (!res.ok) throw ghError(res, 'read');
   const meta = await res.json();
   let text = meta.content ? Buffer.from(meta.content, 'base64').toString('utf8') : null;
   if (text === null) text = await (await gh(file, { raw: true })).text(); // files over 1 MB come without content
@@ -153,7 +180,7 @@ export async function updateComments(entryId, change, message) {
         },
       });
       if (res.ok) return next;
-      if (res.status !== 409 && res.status !== 422) throw new Error(`GitHub save failed (${res.status})`);
+      if (res.status !== 409 && res.status !== 422) throw ghError(res, 'save');
     }
     throw Object.assign(new Error('Busy'), { status: 503 });
   }

@@ -28,6 +28,8 @@ export default async function handler(req, res) {
     return methodNotAllowed(res, 'GET, PUT');
   } catch (err) {
     console.error(err);
-    return send(res, err.status || 500, { error: err.status === 413 ? 'That is too much to save at once.' : 'Something went wrong on the server.' });
+    if (err.status === 413) return send(res, 413, { error: 'That is too much to save at once.' });
+    const editor = codeOk(requestCode(req));
+    return send(res, err.status || 500, { error: editor && err.expose ? err.message : 'Something went wrong on the server.' });
   }
 }
