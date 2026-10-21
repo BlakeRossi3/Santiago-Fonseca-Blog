@@ -3,7 +3,7 @@
     "name": "",
     "tagline": "Notes on films, short fiction, and *other things I make*.",
     "intro": "A running record of what I'm watching, writing and building. Start anywhere.",
-    "about": "This is the about page. Say who you are, what you make, and what you're working on next.\n\nYou can change all of this, and everything else on the site, from edit mode: click **Edit** at the bottom of any page and enter your code.",
+    "about": "My name is Santiago Fonseca.\nFrom a young age, I’ve been deeply drawn to movies, books, writing, and the world unfolding around me. This website is the space I created to explore those passions more fully — with greater depth, wider perspective, and an international voice.\nHere you’ll find my thoughts on films and television, original short stories, and honest reflections on the news and events shaping our world.\nThis is more than a personal page. It’s a space for shared curiosity, storytelling, and conversation across borders.",
     "photo": "",
     "email": "",
     "links": [],
@@ -25,7 +25,7 @@
     "es": {
       "tagline": "Apuntes sobre cine, ficción breve y *otras cosas que hago*.",
       "intro": "Un registro de lo que veo, escribo y construyo. Empieza por donde quieras.",
-      "about": "Esta es la página «Sobre mí». Cuenta quién eres, qué haces y en qué estás trabajando ahora.\n\nPuedes cambiar todo esto, y todo lo demás del sitio, en el modo edición: pulsa **Editar** al pie de cualquier página e introduce tu código.",
+      "about": "Me llamo Santiago Fonseca.\nDesde muy joven he sentido una profunda atracción por el cine, los libros, la escritura y el mundo que me rodea. Creé este sitio web para explorar esas pasiones de una forma más profunda, con una perspectiva más amplia y una voz internacional.\nAquí encontrarás mis opiniones sobre películas y series, relatos cortos originales y reflexiones honestas sobre las noticias y los acontecimientos que están moldeando nuestro mundo.\nEsto es más que una página personal. Es un espacio de curiosidad compartida, de relatos y de conversación más allá de las fronteras.",
       "sections": {
         "review": {
           "title": "",
@@ -89,7 +89,7 @@
     {
       "id": "sample-review-2",
       "type": "review",
-      "title": "Past Livesss",
+      "title": "Past Lives",
       "slug": "past-lives",
       "date": "2026-09-08",
       "published": true,
