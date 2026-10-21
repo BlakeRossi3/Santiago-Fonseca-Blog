@@ -7,7 +7,6 @@
     "photo": "",
     "email": "",
     "links": [],
-    "comments": true,
     "sections": {
       "review": {
         "title": "",
@@ -22,6 +21,7 @@
         "intro": ""
       }
     },
+    "comments": true,
     "es": {
       "tagline": "Apuntes sobre cine, ficción breve y *otras cosas que hago*.",
       "intro": "Un registro de lo que veo, escribo y construyo. Empieza por donde quieras.",
@@ -78,18 +78,18 @@
         "Drama",
         "Road movie"
       ],
-      "year": "1984",
-      "director": "Wim Wenders",
-      "rating": 4.5,
       "es": {
         "summary": "Una película sobre la distancia entre las personas, medida en millas, luego en pasos y al final en nada.",
         "body": "Wenders filma el suroeste americano como si fuera la superficie de un planeta al que nadie se ha molestado en ponerle nombre. Travis sale caminando de él al principio y pasa el resto de la película intentando volver a entrar en su propia vida.\nLa escena del peep show es toda la película en miniatura: dos personas que no pueden mirarse, hablando a través de un cristal, diciendo por fin la verdad porque no pueden verse la cara.\nLa guitarra slide de Ry Cooder hace la mitad de la actuación. Harry Dean Stanton hace la otra mitad sin que parezca que lo intenta.\n(Reseña de ejemplo: cámbiala por una tuya.)"
-      }
+      },
+      "year": "1984",
+      "director": "Wim Wenders",
+      "rating": 4.5
     },
     {
       "id": "sample-review-2",
       "type": "review",
-      "title": "Past Lives",
+      "title": "Past Livesss",
       "slug": "past-lives",
       "date": "2026-09-08",
       "published": true,
@@ -101,14 +101,14 @@
         "Drama",
         "Romance"
       ],
-      "year": "2023",
-      "director": "Celine Song",
-      "rating": 4,
       "es": {
         "title": "Vidas pasadas",
         "summary": "Tranquila, precisa y devastadora como solo puede serlo la contención.",
         "body": "No pasa casi nada y pasa todo. Celine Song confía en el silencio más de lo que se atrevería la mayoría de los directores debutantes, y le sale bien en un último paseo hasta un taxi que dura un minuto y se siente como veinticuatro años.\n(Reseña de ejemplo: cámbiala por una tuya.)"
-      }
+      },
+      "year": "2023",
+      "director": "Celine Song",
+      "rating": 4
     },
     {
       "id": "sample-news",
