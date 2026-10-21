@@ -1,6 +1,5 @@
 // Everything saved goes through cleanContent: known fields only, sane lengths, safe URLs.
-export const TYPES = ['review', 'story', 'project'];
-export const PROJECT_STATUSES = ['Idea', 'In progress', 'Finished', 'On hold'];
+export const TYPES = ['review', 'story', 'news'];
 
 const str = (v, max = 500) => (typeof v === 'string' ? v : v == null ? '' : String(v)).slice(0, max);
 
@@ -44,11 +43,6 @@ function cleanEntry(e) {
     out.director = str(e.director, 120).trim();
     out.rating = rating;
   }
-  if (type === 'project') {
-    out.status = PROJECT_STATUSES.includes(e.status) ? e.status : '';
-    out.role = str(e.role, 120).trim();
-    out.link = safeUrl(e.link);
-  }
   return out;
 }
 
@@ -86,6 +80,7 @@ export function cleanContent(input) {
 
   const seen = new Set();
   const entries = (Array.isArray(src.entries) ? src.entries : [])
+    .map(e => (e && e.type === 'project' ? { ...e, type: 'news' } : e)) // the old Projects section became News
     .filter(e => e && typeof e === 'object' && TYPES.includes(e.type))
     .slice(0, 2000)
     .map(cleanEntry)

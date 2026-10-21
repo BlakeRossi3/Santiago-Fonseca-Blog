@@ -1,6 +1,6 @@
 # Creative Portfolio
 
-A portfolio site for film reviews, short stories and projects. It has a dark theme with purple highlights.
+A portfolio site for film reviews, short stories and news posts. It has a dark theme with purple highlights.
 Visitors read and can leave comments. The owner clicks **Edit** in the footer, enters the edit code, and can then write, edit,
 upload images and change site settings right on the page.
 

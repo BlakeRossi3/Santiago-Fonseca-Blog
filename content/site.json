@@ -17,7 +17,7 @@
         "title": "",
         "intro": ""
       },
-      "project": {
+      "news": {
         "title": "",
         "intro": ""
       }
@@ -35,7 +35,7 @@
           "title": "",
           "intro": ""
         },
-        "project": {
+        "news": {
           "title": "",
           "intro": ""
         }
@@ -111,26 +111,22 @@
       }
     },
     {
-      "id": "sample-project",
-      "type": "project",
-      "title": "This portfolio",
-      "slug": "this-portfolio",
+      "id": "sample-news",
+      "type": "news",
+      "title": "Welcome to the new site",
+      "slug": "welcome-to-the-new-site",
       "date": "2026-10-20",
       "published": true,
       "featured": false,
       "cover": "",
-      "summary": "A home for my reviews, stories and works in progress.",
-      "body": "Built to be simple to keep up: write in edit mode, hit save, done.\n## What's next\n- Fill it with real work\n- Add a photo on the About page\n- Delete these samples",
+      "summary": "",
+      "body": "This is where reviews, short stories and the odd bit of news will live from now on.\nExpect a new film review most weeks and a short story whenever one is ready. Comments are open on everything, so say hello.\n## What's coming\n- A few older stories, cleaned up and posted here\n- Reviews from this year's festival season\n(This is a sample post. Replace it with your own from edit mode.)",
       "tags": [
-        "Web"
+        "Updates"
       ],
-      "status": "In progress",
-      "role": "Writer & editor",
-      "link": "",
       "es": {
-        "title": "Este portafolio",
-        "summary": "Un hogar para mis reseñas, cuentos y trabajos en curso.",
-        "body": "Hecho para ser fácil de mantener: escribe en el modo edición, guarda y listo.\n## Lo que sigue\n- Llenarlo de trabajo real\n- Añadir una foto en la página «Sobre mí»\n- Borrar estos ejemplos"
+        "title": "Bienvenidos al nuevo sitio",
+        "body": "Aquí vivirán a partir de ahora las reseñas, los cuentos y alguna que otra noticia.\nHabrá una reseña nueva casi cada semana y un cuento cada vez que haya uno listo. Los comentarios están abiertos en todo, así que pasa a saludar.\n## Lo que viene\n- Algunos cuentos antiguos, revisados y publicados aquí\n- Reseñas de la temporada de festivales de este año\n(Esta es una entrada de ejemplo. Sustitúyela por una tuya desde el modo edición.)"
       }
     }
   ]

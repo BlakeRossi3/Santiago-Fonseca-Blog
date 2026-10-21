@@ -5,15 +5,14 @@
 const TYPES = {
   review: { label: 'Film review', path: 'films', nav: 'Films', title: 'Films', intro: "Reviews and notes on what I've been watching.", count: ['review', 'reviews'] },
   story: { label: 'Short story', path: 'stories', nav: 'Stories', title: 'Short stories', intro: 'Fiction, mostly short, occasionally strange.', count: ['story', 'stories'] },
-  project: { label: 'Project', path: 'projects', nav: 'Projects', title: 'Projects', intro: "Things I'm making, have made, or keep meaning to finish.", count: ['project', 'projects'] },
+  news: { label: 'News', path: 'news', nav: 'News', title: 'News', intro: 'Updates, announcements and the occasional ramble.', count: ['post', 'posts'] },
 };
-const ORDER = ['review', 'story', 'project'];
+const ORDER = ['review', 'story', 'news'];
 const TYPE_BY_PATH = Object.fromEntries(ORDER.map(t => [TYPES[t].path, t]));
-const PROJECT_STATUSES = ['Idea', 'In progress', 'Finished', 'On hold'];
 const LABELS = {
   review: { title: 'Film title', summary: 'The short version', body: 'Review', date: 'Watched on', cover: 'Poster' },
   story: { title: 'Story title', summary: 'Teaser', body: 'Story', date: 'Written on', cover: 'Cover image (optional)' },
-  project: { title: 'Project name', summary: 'One-line description', body: 'Write-up', date: 'Date', cover: 'Cover image' },
+  news: { title: 'Headline', summary: 'Excerpt (optional; otherwise the start of the post is used)', body: 'Post', date: 'Date', cover: 'Cover image (optional)' },
 };
 const DEFAULT_SITE = { name: '', tagline: '', intro: '', about: '', photo: '', email: '', links: [] };
 const CODE_KEY = 'portfolio-edit-code';
@@ -23,19 +22,18 @@ const LANG_KEY = 'portfolio-lang';
 // (entry.es, site.es); anything without one falls back to English.
 const STR = {
   en: {
-    'type.review': 'Film review', 'type.story': 'Short story', 'type.project': 'Project',
-    'nav.review': 'Films', 'nav.story': 'Stories', 'nav.project': 'Projects', 'nav.about': 'About',
-    'sec.review': 'Films', 'sec.story': 'Short stories', 'sec.project': 'Projects',
+    'type.review': 'Film review', 'type.story': 'Short story', 'type.news': 'News',
+    'nav.review': 'Films', 'nav.story': 'Stories', 'nav.news': 'News', 'nav.about': 'About',
+    'sec.review': 'Films', 'sec.story': 'Short stories', 'sec.news': 'News',
     'intro.review': "Reviews and notes on what I've been watching.",
     'intro.story': 'Fiction, mostly short, occasionally strange.',
-    'intro.project': "Things I'm making, have made, or keep meaning to finish.",
-    'count.review': ['review', 'reviews'], 'count.story': ['story', 'stories'], 'count.project': ['project', 'projects'],
-    'cta.review': 'Read the review', 'cta.story': 'Read the story', 'cta.project': 'See the project',
-    'status.Idea': 'Idea', 'status.In progress': 'In progress', 'status.Finished': 'Finished', 'status.On hold': 'On hold',
+    'intro.news': 'Updates, announcements and the occasional ramble.',
+    'count.review': ['review', 'reviews'], 'count.story': ['story', 'stories'], 'count.news': ['news post', 'news posts'],
+    'cta.review': 'Read the review', 'cta.story': 'Read the story', 'cta.news': 'Read more',
     seeAll: 'See all →', featured: 'Featured', nothingYet: 'Nothing here yet.', addFirst: 'Add the first one',
     nothingPublished: 'Nothing published yet. Check back soon.', all: 'All', newest: 'Newest', topRated: 'Top rated',
     previous: '← Previous', next: 'Next →', more: 'More', directedBy: 'Directed by {x}', watched: 'Watched {x}',
-    minRead: '{n} min read', visitProject: 'Visit project ↗', email: 'Email', draft: 'Draft', starsLabel: '{r} out of 5 stars',
+    minRead: '{n} min read', email: 'Email', draft: 'Draft', starsLabel: '{r} out of 5 stars',
     notFound: 'Not found', notFoundTitle: 'Lost the plot.', notFoundText: "That page doesn't exist (or has moved).", goHome: 'Go home',
     editMode: 'Edit mode', unlockPrompt: 'Unlock with the edit code to continue.', unlock: 'Unlock',
     comments: 'Comments', name: 'Name', comment: 'Comment', beKind: 'Be kind. Comments show up right away.',
@@ -49,19 +47,18 @@ const STR = {
     loadFailTitle: 'Hmm.', loadFailText: "The site couldn't load. Try refreshing.", language: 'Language',
   },
   es: {
-    'type.review': 'Reseña de cine', 'type.story': 'Cuento', 'type.project': 'Proyecto',
-    'nav.review': 'Cine', 'nav.story': 'Cuentos', 'nav.project': 'Proyectos', 'nav.about': 'Sobre mí',
-    'sec.review': 'Cine', 'sec.story': 'Cuentos', 'sec.project': 'Proyectos',
+    'type.review': 'Reseña de cine', 'type.story': 'Cuento', 'type.news': 'Noticia',
+    'nav.review': 'Cine', 'nav.story': 'Cuentos', 'nav.news': 'Noticias', 'nav.about': 'Sobre mí',
+    'sec.review': 'Cine', 'sec.story': 'Cuentos', 'sec.news': 'Noticias',
     'intro.review': 'Reseñas y apuntes sobre lo que he estado viendo.',
     'intro.story': 'Ficción, casi siempre breve, a veces extraña.',
-    'intro.project': 'Cosas que estoy haciendo, que ya hice o que sigo queriendo terminar.',
-    'count.review': ['reseña', 'reseñas'], 'count.story': ['cuento', 'cuentos'], 'count.project': ['proyecto', 'proyectos'],
-    'cta.review': 'Leer la reseña', 'cta.story': 'Leer el cuento', 'cta.project': 'Ver el proyecto',
-    'status.Idea': 'Idea', 'status.In progress': 'En curso', 'status.Finished': 'Terminado', 'status.On hold': 'En pausa',
+    'intro.news': 'Novedades, anuncios y alguna que otra divagación.',
+    'count.review': ['reseña', 'reseñas'], 'count.story': ['cuento', 'cuentos'], 'count.news': ['noticia', 'noticias'],
+    'cta.review': 'Leer la reseña', 'cta.story': 'Leer el cuento', 'cta.news': 'Leer más',
     seeAll: 'Ver todo →', featured: 'Destacado', nothingYet: 'Todavía no hay nada aquí.', addFirst: 'Añadir el primero',
     nothingPublished: 'Aún no hay nada publicado. Vuelve pronto.', all: 'Todo', newest: 'Más recientes', topRated: 'Mejor valoradas',
     previous: '← Anterior', next: 'Siguiente →', more: 'Más', directedBy: 'Dirigida por {x}', watched: 'Vista el {x}',
-    minRead: '{n} min de lectura', visitProject: 'Ver proyecto ↗', email: 'Correo', draft: 'Borrador', starsLabel: '{r} de 5 estrellas',
+    minRead: '{n} min de lectura', email: 'Correo', draft: 'Borrador', starsLabel: '{r} de 5 estrellas',
     notFound: 'No encontrado', notFoundTitle: 'Se perdió la trama.', notFoundText: 'Esa página no existe (o se ha movido).', goHome: 'Volver al inicio',
     editMode: 'Modo edición', unlockPrompt: 'Desbloquea con el código de edición para continuar.', unlock: 'Desbloquear',
     comments: 'Comentarios', name: 'Nombre', comment: 'Comentario', beKind: 'Sé amable. Los comentarios aparecen al instante.',
@@ -139,6 +136,7 @@ function normalize(c) {
     })),
   };
   const entries = (Array.isArray(c.entries) ? c.entries : [])
+    .map(e => (e && e.type === 'project' ? { ...e, type: 'news' } : e))
     .filter(e => e && TYPES[e.type])
     .map(e => ({ tags: [], published: true, featured: false, summary: '', body: '', cover: '', date: '', ...e }));
   return { site: s, entries };
@@ -173,7 +171,6 @@ const sectionIntro = t => siteSections()[t].intro || tr(`intro.${t}`);
 const siteTitle = () => state.content.site.name || tr('siteTitle');
 const siteText = k => (state.lang === 'es' && state.content.site.es[k]) || state.content.site[k];
 const typeLabel = t => tr(`type.${t}`);
-const statusLabel = s => tr(`status.${s}`);
 const byDate = (a, b) => (b.date || '').localeCompare(a.date || '');
 // The Spanish version of an entry, field by field, falling back to English.
 const localize = e => (state.lang === 'es' && e.es
@@ -282,23 +279,35 @@ function storyRow(e) {
   </a>`;
 }
 
-function projectCard(e) {
-  return `<a class="project-card" href="${urlOf(e)}">
-    ${e.cover ? `<div class="project-cover">${media(e)}</div>` : ''}
-    <div class="project-body">
-      ${e.status || e.published === false ? `<div class="card-meta">${e.status ? `<span class="pill" data-status="${esc(e.status)}">${esc(statusLabel(e.status))}</span>` : ''}${draftBadge(e)}</div>` : ''}
+// The opening of a post as plain text, for excerpts.
+function excerpt(body, max = 240) {
+  const text = String(body || '').split('\n').map(l => l.trim())
+    .filter(l => l && !/^(#|>|!\[|\*\s*\*|-{3}|[-*•]\s|\d+[.)]\s)/.test(l))
+    .join(' ').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]/g, '');
+  return text.length > max ? text.slice(0, max).replace(/\s+\S*$/, '') + '…' : text;
+}
+
+const longDate = d => fmtDate(d, { month: 'long', day: 'numeric', year: 'numeric' });
+
+function newsCard(e) {
+  const blurb = e.summary ? inlineText(e.summary) : esc(excerpt(e.body));
+  return `<a class="news-card${e.cover ? ' has-cover' : ''}" href="${urlOf(e)}">
+    ${e.cover ? `<div class="news-cover">${media(e)}</div>` : ''}
+    <div class="news-body">
+      <p class="eyebrow">${e.date ? `<span>${longDate(e.date)}</span><span aria-hidden="true">·</span>` : ''}<span>${readTime(e.body)}</span> ${draftBadge(e)}</p>
       <h3>${esc(e.title)}</h3>
-      ${e.summary ? `<p>${inlineText(e.summary)}</p>` : ''}
+      ${blurb ? `<p class="news-excerpt">${blurb}</p>` : ''}
+      <span class="read-more">${tr('cta.news')} →</span>
     </div>
   </a>`;
 }
 
-const CARD = { review: posterCard, story: storyRow, project: projectCard };
-const WRAP = { review: 'posters', story: 'story-list', project: 'projects' };
+const CARD = { review: posterCard, story: storyRow, news: newsCard };
+const WRAP = { review: 'posters', story: 'story-list', news: 'news-list' };
 const grid = (type, list) => `<div class="${WRAP[type]}">${list.map(CARD[type]).join('')}</div>`;
 
 function featuredCard(e) {
-  const art = e.cover || e.type !== 'story'
+  const art = e.cover || e.type === 'review'
     ? media(e, { big: true })
     : `<div class="featured-quote"><span>${esc(firstLine(e.body) || e.summary)}</span></div>`;
   const cta = tr(`cta.${e.type}`);
@@ -325,7 +334,7 @@ function homeView() {
   const all = visible();
   const featured = all.find(e => e.featured);
   const rest = all.filter(e => e !== featured);
-  const limits = { review: 6, story: 4, project: 3 };
+  const limits = { review: 6, story: 4, news: 3 };
   const stats = ORDER.map(t => {
     const n = ofType(t).length;
     return n ? `<a href="/${TYPES[t].path}"><b>${n}</b>${tr(`count.${t}`)[n === 1 ? 0 : 1]}</a>` : '';
@@ -457,20 +466,19 @@ function entryView(type, slug) {
       </div>
     </article>`;
   } else {
-    const meta = [e.status && `<span class="pill" data-status="${esc(e.status)}">${esc(statusLabel(e.status))}</span>`, e.role && `<span>${esc(e.role)}</span>`, e.date && `<span>${fmtDate(e.date, { month: 'long', year: 'numeric' })}</span>`].filter(Boolean);
-    const link = safeHref(e.link);
     html = `<article class="entry view">
-      ${entryTools(e)}
-      ${eyebrow()}
-      <h1>${esc(e.title)}</h1>
-      ${meta.length ? `<div class="entry-meta">${meta.join('')}</div>` : ''}
-      ${lede}
-      ${link ? `<p><a class="btn" style="margin-top:24px" href="${esc(link)}" target="_blank" rel="noopener">${tr('visitProject')}</a></p>` : ''}
-      ${e.cover ? `<div class="entry-cover">${media(e, { big: true })}</div>` : ''}
-      <div class="prose">${md(e.body)}</div>
-      ${tagRow(e)}
-      ${commentsBlock(e)}
-      ${entryNav(e)}
+      <div class="reading">
+        ${entryTools(e)}
+        ${eyebrow(`<span aria-hidden="true">·</span><span>${readTime(e.body)}</span>`)}
+        <h1>${esc(e.title)}</h1>
+        ${e.date ? `<div class="entry-meta"><span>${longDate(e.date)}</span></div>` : ''}
+        ${lede}
+        ${e.cover ? `<div class="entry-cover">${media(e, { big: true })}</div>` : ''}
+        <div class="prose">${md(e.body)}</div>
+        ${tagRow(e)}
+        ${commentsBlock(e)}
+        ${entryNav(e)}
+      </div>
     </article>`;
   }
   return { title: e.title, html, mount: () => { wireDelete(); mountComments(e); } };
@@ -598,7 +606,7 @@ function lockedView() {
 
 // ---------- Editor ----------
 function blankEntry(type) {
-  return { id: newId(), type, title: '', slug: '', date: today(), published: true, featured: false, cover: '', summary: '', body: '', tags: [], year: '', director: '', rating: 0, status: 'In progress', role: '', link: '' };
+  return { id: newId(), type, title: '', slug: '', date: today(), published: true, featured: false, cover: '', summary: '', body: '', tags: [], year: '', director: '', rating: 0 };
 }
 
 const imageField = (name, value, label, extraClass = '') => `
@@ -711,15 +719,6 @@ function editorView({ id, type }) {
               <input type="range" name="rating" min="0" max="5" step="0.5" value="${Number(e.rating) || 0}">
               <span class="rating-out" data-rating-out></span>
             </label>
-          </div>
-
-          <div class="panel" data-for="project">
-            <p class="panel-title">Project details</p>
-            <label class="field"><span class="label">Status</span>
-              <select class="input" name="pstatus"><option value="">—</option>${PROJECT_STATUSES.map(s => `<option ${s === e.status ? 'selected' : ''}>${s}</option>`).join('')}</select>
-            </label>
-            <label class="field"><span class="label">Role</span><input class="input" name="role" maxlength="120" value="${esc(e.role)}" placeholder="Writer, director…"></label>
-            <label class="field"><span class="label">Link</span><input class="input" name="link" type="url" value="${esc(e.link)}" placeholder="https://"></label>
           </div>
 
           <div class="panel">
@@ -872,7 +871,6 @@ function mountEditor(entry, existing) {
       es: { title: f.title_es.value.trim(), summary: f.summary_es.value.trim(), body: f.body_es.value.replace(/\s+$/, '') },
     };
     if (type === 'review') Object.assign(next, { year: f.year.value.trim(), director: f.director.value.trim(), rating: Number(f.rating.value) || 0 });
-    if (type === 'project') Object.assign(next, { status: f.pstatus.value, role: f.role.value.trim(), link: safeHref(f.link.value) });
 
     const btn = $('[type=submit]', form);
     const label = btn.textContent;
